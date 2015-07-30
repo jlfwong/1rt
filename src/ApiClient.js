@@ -12,15 +12,12 @@ class ApiClient_ {
     ['get', 'post', 'put', 'patch', 'del'].
       forEach((method) => {
         this[method] = (path, options) => {
+          // TODO(jlfwong): Might need to deal with JSONP here.
           return new Promise((resolve, reject) => {
-            let request = superagent[method](this.formatUrl(path));
+            let request = superagent[method](
+              `https://khanacademy.org/${path}`);
             if (options && options.params) {
               request.query(options.params);
-            }
-            if (__SERVER__) {
-              if (req.get('cookie')) {
-                request.set('cookie', req.get('cookie'));
-              }
             }
             if (options && options.data) {
               request.send(options.data);
@@ -35,17 +32,6 @@ class ApiClient_ {
           });
         };
       });
-  }
-
-  /* This was originally a standalone function outside of this class, but babel kept breaking, and this fixes it  */
-  formatUrl(path) {
-    let adjustedPath = path[0] !== '/' ? '/' + path : path;
-    if (__SERVER__) {
-      // Prepend host and port of the API server to the path.
-      return 'http://localhost:' + config.apiPort + adjustedPath;
-    }
-    // Prepend `/api` to relative URL, to proxy to API server.
-    return '/api' + adjustedPath;
   }
 }
 const ApiClient = ApiClient_;

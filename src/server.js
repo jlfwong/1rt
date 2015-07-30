@@ -7,7 +7,6 @@ import compression from 'compression';
 import httpProxy from 'http-proxy';
 import path from 'path';
 import createStore from './redux/create';
-import api from './api/api';
 import ApiClient from './ApiClient';
 import universalRouter from './universalRouter';
 import Html from './Html';
@@ -29,11 +28,6 @@ if (!__DEVELOPMENT__) {
 }
 
 app.use(require('serve-static')(path.join(__dirname, '..', 'static')));
-
-// Proxy to API server
-app.use('/api', (req, res) => {
-  proxy.web(req, res);
-});
 
 app.use((req, res) => {
   if (__DEVELOPMENT__) {
@@ -70,12 +64,6 @@ if (config.port) {
   app.listen(config.port, (err) => {
     if (err) {
       console.error(err);
-    } else {
-      api().then(() => {
-        console.info('==> ✅  Server is listening');
-        console.info('==> 🌎  %s running on port %s, API on port %s', config.app.name, config.port, config.apiPort);
-        console.info('----------\n==> 💻  Open http://localhost:%s in a browser to view the app.', config.port);
-      });
     }
   });
 } else {
