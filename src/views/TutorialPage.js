@@ -4,6 +4,30 @@ import {connect} from 'react-redux';
 import {load as loadTopic} from '../actions/topicActions';
 import {topicWasRequested} from '../reducers/topic';
 
+
+class TutorialNav {
+  static propTypes = {
+    tutorialData: PropTypes.object.isRequired
+  }
+
+  render() {
+    var {tutorialData} = this.props;
+
+    return <div>
+      <h2>{tutorialData.title}</h2>
+      <ul>
+        {tutorialData.children.map(child =>
+          <li key={child.nodeSlug}>
+            <Link to={`${tutorialData.relativeUrl}/${child.nodeSlug}`} >
+              {child.title}
+            </Link>
+          </li>
+        )}
+      </ul>
+    </div>;
+  }
+}
+
 @connect((state, props) => {
   return {
     tutorialData: state.topic[props.params.tutorialSlug]
@@ -16,14 +40,12 @@ class TutorialPage {
     params: PropTypes.object.isRequired
   }
 
-  static fetchData(store, nextState) {
-    const promises = [];
+  componentDidMount() {
+    const {tutorialData, dispatch, params} = this.props;
 
-    if (!topicWasRequested(store.getState(), nextState.tutorialSlug)) {
-      promises.push(store.dispatch(loadTopic(nextState.tutorialSlug)));
+    if (!tutorialData || !tutorialData.title) {
+      dispatch(loadTopic(params.tutorialSlug));
     }
-
-    return Promise.all(promises);
   }
 
   render() {
@@ -31,18 +53,7 @@ class TutorialPage {
 
     return <div>
       {this.props.children}
-      <div>
-        <h2>{tutorialData.title}</h2>
-        <ul>
-          {tutorialData.children.map(child =>
-            <li>
-              <Link to={`${tutorialData.relativeUrl}/${child.nodeSlug}`} >
-                {child.title}
-              </Link>
-            </li>
-          )}
-        </ul>
-      </div>
+      {tutorialData && tutorialData.title && <TutorialNav tutorialData={tutorialData} />}
     </div>
   }
 }

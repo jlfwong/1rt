@@ -34,15 +34,9 @@ class VideoPage {
     const youtubeEmbedUrl = `https://www.youtube.com/embed/${youtubeId}`;
 
     return <div>
-      <h1>{videoData.title}</h1>
+      <h1>{videoData.translatedTitle}</h1>
       <iframe type="text/html" width={640} height={480} src={youtubeEmbedUrl} />;
-      <br />
-      <Link to="/math/algebra/introduction-to-algebra/overview_hist_alg/v/origins-of-algebra">
-        Origins of Algebra
-      </Link>
-      <Link to="/science/biology/chemistry--of-life/elements-and-atoms/v/elements-and-atoms">
-        Elements and Atoms
-      </Link>
+      <p>{videoData.translatedDescription}</p>
     </div>
   }
 }

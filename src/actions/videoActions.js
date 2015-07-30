@@ -12,8 +12,9 @@ export function load(readableId) {
       return client
         .get(`api/v1/videos/${readableId}?casing=camel`)
         .then(data => ({
-          title: data.title,
-          translatedYoutubeId: data.translatedYoutubeId
+          translatedTitle: data.translatedTitle,
+          translatedYoutubeId: data.translatedYoutubeId,
+          translatedDescription: data.translatedDescription
         }))
     },
     readableId: readableId
