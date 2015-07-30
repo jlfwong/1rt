@@ -51,8 +51,12 @@ class VideoPageContainer {
     return <div>
       <VideoPage youtubeId={youtubeId} />
       <br />
-      <Link to="/origins-of-algebra">Origins of Algebra</Link>
-      <Link to="/elements-and-atoms">Elements and Atoms</Link>
+      <Link to="/math/algebra/introduction-to-algebra/overview_hist_alg/v/origins-of-algebra">
+        Origins of Algebra
+      </Link>
+      <Link to="/science/biology/chemistry--of-life/elements-and-atoms/v/elements-and-atoms">
+        Elements and Atoms
+      </Link>
     </div>
   }
 }
