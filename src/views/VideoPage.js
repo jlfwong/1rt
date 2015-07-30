@@ -37,7 +37,7 @@ class VideoPageContainer {
   static fetchData(store, nextState) {
     const promises = [];
 
-    if (!videoWasRequested(nextState.videoReadableId)) {
+    if (!videoWasRequested(store.getState(), nextState.videoReadableId)) {
       promises.push(store.dispatch(loadVideo(nextState.videoReadableId)));
     }
 
