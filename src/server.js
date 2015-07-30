@@ -41,7 +41,7 @@ const prologue = (title, style) => `<!doctype html><html lang="en-us">
 </head>
 <body>
 <div id="header">${React.renderToString(<Header />)}</div>
-Hello World`;
+`;
 
 const body = (webpackStats, component, store) => `
 <div id="content">${React.renderToString(component)}</div>

@@ -5,6 +5,18 @@ import {load as loadVideo} from '../actions/videoActions';
 import {videoWasRequested} from '../reducers/video';
 import {Link} from 'react-router';
 
+const videoTitleStyle = {
+  fontSize: '18px',
+  marginBottom: '10px'
+};
+
+const descriptionBoxStyle = {
+  background: '#f7f7f7',
+  border: '1px solid #ddd',
+  margin: '0 10px',
+  padding: '10px'
+};
+
 @connect((state, props) => {
   return {
     videoData: state.video[props.params.videoReadableId]
@@ -34,9 +46,11 @@ class VideoPage {
     const youtubeEmbedUrl = `https://www.youtube.com/embed/${youtubeId}`;
 
     return <div>
-      <h1>{videoData.translatedTitle}</h1>
-      <iframe type="text/html" width={640} height={480} src={youtubeEmbedUrl} />;
-      <p>{videoData.translatedDescription}</p>
+      <iframe type="text/html" width="100%" height={192} src={youtubeEmbedUrl} style={{marginBottom: '8px'}} />
+      <div style={descriptionBoxStyle}>
+        <p style={videoTitleStyle}>{videoData.translatedTitle}</p>
+        <p>{videoData.translatedDescription}</p>
+      </div>
     </div>
   }
 }
