@@ -3,7 +3,7 @@ import {connect} from 'react-redux';
 import {createTransitionHook} from '../universalRouter';
 import {load as loadVideo} from '../actions/videoActions';
 import {videoWasRequested} from '../reducers/video';
-import Router from 'react-router';
+import {Link} from 'react-router';
 
 class VideoPage extends Component {
   static propTypes = {
@@ -48,6 +48,11 @@ class VideoPageContainer {
     const {videoData} = this.props;
 
     const youtubeId = videoData['translatedYoutubeId'];
-    return <VideoPage youtubeId={youtubeId} />;
+    return <div>
+      <VideoPage youtubeId={youtubeId} />
+      <br />
+      <Link to="/origins-of-algebra">Origins of Algebra</Link>
+      <Link to="/elements-and-atoms">Elements and Atoms</Link>
+    </div>
   }
 }

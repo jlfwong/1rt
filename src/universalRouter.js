@@ -9,20 +9,16 @@ const getFetchData = (component) => {
 
 export function createTransitionHook(store) {
   return (nextState, transition, callback) => {
-    Promise.all(nextState.branch
-      .map(route => route.component)
-      .filter(component => {
-        return getFetchData(component);
-      })
-      .map(getFetchData)
-      .map(fetchData => {
-        return fetchData(store, nextState.params);
-      }))
-      .then(() => {
-        callback(); // can't just pass callback to then() because callback assumes first param is error
-      }, (error) => {
-        callback(error);
-      });
+    Promise.all(
+      nextState.branch
+        .map(route => getFetchData(route.component))
+        .filter(x => !!x)
+        .map(fetchData => fetchData(store, nextState.params))
+    ).then(() => {
+      callback(); // can't just pass callback to then() because callback assumes first param is error
+    }, (error) => {
+      callback(error);
+    });
   };
 }
 

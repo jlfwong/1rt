@@ -52,6 +52,7 @@
     "serve-favicon": "^2.3.0",
     "serve-static": "^1.10.0",
     "superagent": "^1.2.0",
+    "superagent-jsonp": "0.0.4",
     "url-loader": "^0.5.6"
   },
   "devDependencies": {

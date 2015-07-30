@@ -7,6 +7,16 @@ import {createTransitionHook} from '../universalRouter';
 
 export default
 class App extends Component {
+  static contextTypes = {
+    router: PropTypes.object.isRequired,
+    store: PropTypes.object.isRequired
+  }
+
+  componentWillMount() {
+    const {router, store} = this.context;
+    router.addTransitionHook(createTransitionHook(store));
+  }
+
   render() {
     return (
       <div>
