@@ -1,3 +1,4 @@
+import fs from 'fs';
 import Express from 'express';
 import React from 'react';
 import Location from 'react-router/lib/Location';
@@ -11,6 +12,7 @@ import ApiClient from './ApiClient';
 import universalRouter from './universalRouter';
 import PrettyError from 'pretty-error';
 import serialize from 'serialize-javascript';
+import Header from './components/Header';
 
 const pretty = new PrettyError();
 const app = new Express();
@@ -29,9 +31,16 @@ if (!__DEVELOPMENT__) {
 
 app.use(require('serve-static')(path.join(__dirname, '..', 'static')));
 
-const prologue = title => `<!doctype html><html lang="en-us">
-<head><meta charset="utf-8"><title>${title}</title></head>
+const prologue = (title, style) => `<!doctype html><html lang="en-us">
+<head>
+<meta charset="utf-8">
+<title>${title}</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<link rel="shortcut icon" href="https://www.khanacademy.org/favicon.ico?leaf">
+<style type="text/css">${style}</style>
+</head>
 <body>
+<div id="header">${React.renderToString(<Header />)}</div>
 Hello World`;
 
 const body = (webpackStats, component, store) => `
@@ -58,7 +67,7 @@ app.use((req, res) => {
   const store = createStore(client);
   const location = new Location(req.path, req.query);
 
-  res.write(prologue("Khan Academy"));
+  res.write(prologue("Khan Academy", fs.readFileSync("./static/site.css")));
   res.flush();
 
   if (__DISABLE_SSR__) {

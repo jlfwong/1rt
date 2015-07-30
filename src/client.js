@@ -5,8 +5,12 @@ import Location from 'react-router/lib/Location';
 import createStore from './redux/create';
 import ApiClient from './ApiClient';
 import universalRouter from './universalRouter';
+import Header from './components/Header';
 const history = new BrowserHistory();
 const client = new ApiClient();
+
+const headerDest = document.getElementById('header');
+React.render(<Header />, headerDest);
 
 const dest = document.getElementById('content');
 const store = createStore(client, window.__data);
