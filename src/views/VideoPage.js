@@ -5,30 +5,13 @@ import {load as loadVideo} from '../actions/videoActions';
 import {videoWasRequested} from '../reducers/video';
 import {Link} from 'react-router';
 
-class VideoPage extends Component {
-  static propTypes = {
-    youtubeId: PropTypes.string.isRequired
-  }
-
-  render() {
-    var {youtubeId} = this.props;
-
-    var url = `https://www.youtube.com/embed/${youtubeId}`;
-    return <iframe
-                type="text/html"
-                width={640}
-                height={480}
-                src={url} />;
-  }
-}
-
 @connect((state, props) => {
   return {
     videoData: state.video[props.params.videoReadableId]
   }
 })
 export default
-class VideoPageContainer {
+class VideoPage {
   static propTypes = {
     videoData: PropTypes.object.isRequired,
     params: PropTypes.object.isRequired
@@ -48,8 +31,11 @@ class VideoPageContainer {
     const {videoData} = this.props;
 
     const youtubeId = videoData['translatedYoutubeId'];
+    const youtubeEmbedUrl = `https://www.youtube.com/embed/${youtubeId}`;
+
     return <div>
-      <VideoPage youtubeId={youtubeId} />
+      <h1>{videoData.title}</h1>
+      <iframe type="text/html" width={640} height={480} src={youtubeEmbedUrl} />;
       <br />
       <Link to="/math/algebra/introduction-to-algebra/overview_hist_alg/v/origins-of-algebra">
         Origins of Algebra

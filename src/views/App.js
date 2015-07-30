@@ -20,7 +20,6 @@ class App extends Component {
   render() {
     return (
       <div>
-        Welcome to Khan Academy! <br/>
         {this.props.children}
       </div>
     );

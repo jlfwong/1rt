@@ -1,3 +1,15 @@
-export const VIDEO_LOAD = 'VIDEO_LOAD';
-export const VIDEO_LOAD_SUCCESS = 'VIDEO_LOAD_SUCCESS';
-export const VIDEO_LOAD_FAIL = 'VIDEO_LOAD_FAIL';
+const makeConstants = (strs) => {
+  const ret = {};
+  strs.forEach(s => { ret[s] = s });
+  return ret;
+}
+
+export default makeConstants([
+  'VIDEO_LOAD',
+  'VIDEO_LOAD_SUCCESS',
+  'VIDEO_LOAD_FAIL',
+
+  'TOPIC_LOAD',
+  'TOPIC_LOAD_SUCCESS',
+  'TOPIC_LOAD_FAIL'
+]);

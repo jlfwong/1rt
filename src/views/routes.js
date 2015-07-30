@@ -8,7 +8,7 @@ import Redirect from 'views/Redirect';
 
 export default (
   <Route component={App}>
-    <Route path=":domain/:subject/:topic/:tutorial" component={TutorialPage}>
+    <Route path=":domainSlug/:subjectSlug/:topicSlug/:tutorialSlug" component={TutorialPage}>
       <Route path="v/:videoReadableId" component={VideoPage}/>
     </Route>
     <Route path="*" component={NotFound}/>
