@@ -13,7 +13,7 @@ const videoTitleStyle = {
 const descriptionBoxStyle = {
   background: '#f7f7f7',
   border: '1px solid #ddd',
-  margin: '0 10px',
+  margin: '0 10px 10px 10px',
   padding: '10px'
 };
 
