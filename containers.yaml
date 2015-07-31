@@ -1,0 +1,17 @@
+# containers.yaml for Google Compute Engine container-optimized VMs
+# See https://cloud.google.com/compute/docs/containers/container_vms
+version: v1
+kind: Pod
+metadata:
+  name: 1rt
+spec:
+  containers:
+    - name: 1rt
+      image: b.gcr.io/ka_container_registry/1rt
+      imagePullPolicy: Always
+      ports:
+        - containerPort: 8080
+          hostPort: 80
+          protocol: TCP
+  restartPolicy: Always
+  dnsPolicy: Default
