@@ -1,8 +1,7 @@
 import React, {Component, PropTypes} from 'react';
 import {connect} from 'react-redux';
 import {createTransitionHook} from '../universalRouter';
-import {load as loadVideo} from '../actions/videoActions';
-import {videoWasRequested} from '../reducers/video';
+import {maybeLoadVideo} from '../actions/videoActions';
 import {Link} from 'react-router';
 
 const videoTitleStyle = {
@@ -17,11 +16,9 @@ const descriptionBoxStyle = {
   padding: '10px'
 };
 
-@connect((state, props) => {
-  return {
-    videoData: state.video[props.params.videoReadableId]
-  }
-})
+@connect((state, props) => ({
+  videoData: state.video[props.params.videoReadableId]
+}))
 export default
 class VideoContent {
   static propTypes = {
@@ -29,14 +26,8 @@ class VideoContent {
     params: PropTypes.object.isRequired
   }
 
-  static fetchData(store, nextState) {
-    const promises = [];
-
-    if (!videoWasRequested(store.getState(), nextState.videoReadableId)) {
-      promises.push(store.dispatch(loadVideo(nextState.videoReadableId)));
-    }
-
-    return Promise.all(promises);
+  static fetchData(store, nextParams) {
+    return maybeLoadVideo(store, nextParams.videoReadableId);
   }
 
   render() {

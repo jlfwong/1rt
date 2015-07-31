@@ -1,17 +1,14 @@
 import React, {Component, PropTypes} from 'react';
 import {Link} from 'react-router';
 import {connect} from 'react-redux';
-import {load as loadTopic} from '../actions/topicActions';
-import {topicWasRequested} from '../reducers/topic';
+import {maybeLoadTopic} from '../actions/topicActions';
 import TutorialNav from '../components/TutorialNav';
 
-@connect((state, props) => {
-  return {
-    tutorialData: state.topic[props.params.tutorialSlug],
-    parentTopicData: state.topic[props.params.topicSlug]
-  }
-})
 export default
+@connect((state, props) => ({
+  tutorialData: state.topic[props.params.tutorialSlug],
+  parentTopicData: state.topic[props.params.topicSlug]
+}))
 class ContentPage {
   static propTypes = {
     tutorialData: PropTypes.object,
@@ -19,16 +16,16 @@ class ContentPage {
     location: PropTypes.object.isRequired
   }
 
+  static contextTypes = {
+    store: PropTypes.object.isRequired
+  }
+
   componentDidMount() {
-    const {tutorialData, parentTopicData, dispatch, params} = this.props;
+    const {params} = this.props;
+    const {store} = this.context;
 
-    if (!tutorialData || !tutorialData.title) {
-      dispatch(loadTopic(params.tutorialSlug));
-    }
-
-    if (!parentTopicData || !parentTopicData.title) {
-      dispatch(loadTopic(params.topicSlug));
-    }
+    maybeLoadTopic(store, params.tutorialSlug);
+    maybeLoadTopic(store, params.topicSlug);
   }
 
   render() {

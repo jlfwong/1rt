@@ -31,7 +31,7 @@ export default function videos(state = initialState, action = {}) {
   }
 }
 
-export function videoWasRequested(globalState, readableId) {
-  if (!globalState.video) return false;
-  return !!globalState.video[readableId];
+export function videoWasRequested(store, readableId) {
+  var {video} = store.getState();
+  return video && video[readableId];
 };

@@ -1,16 +1,14 @@
 import React, {Component, PropTypes} from 'react';
 import {Link} from 'react-router';
 import {connect} from 'react-redux';
-import {load as loadTopic} from '../actions/topicActions';
+import {maybeLoadTopic} from '../actions/topicActions';
 import {topicWasRequested} from '../reducers/topic';
 import SubjectHeader from '../components/SubjectHeader';
 import {TutorialNavList} from '../components/TutorialNav';
 
-@connect((state, props) => {
-  return {
-    topicData: state.topic[props.params.tutorialSlug]
-  }
-})
+@connect((state, props) => ({
+  topicData: state.topic[props.params.tutorialSlug]
+}))
 export default
 class TutorialPage {
   static propTypes = {
@@ -31,14 +29,8 @@ class TutorialPage {
             `${topicData.relativeUrl}/${topicData.children[0].nodeSlug}`);
   }
 
-  static fetchData(store, nextState) {
-    const promises = [];
-
-    if (!topicWasRequested(store.getState(), nextState.tutorialSlug)) {
-      promises.push(store.dispatch(loadTopic(nextState.tutorialSlug)));
-    }
-
-    return Promise.all(promises);
+  static fetchData(store, nextParams) {
+    return maybeLoadTopic(store, nextParams.tutorialSlug);
   }
 
   render() {

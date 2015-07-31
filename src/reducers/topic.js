@@ -31,7 +31,7 @@ export default function topics(state = initialState, action = {}) {
   }
 }
 
-export function topicWasRequested(globalState, topicSlug) {
-  if (!globalState.topic) return false;
-  return !!globalState.topic[topicSlug];
+export function topicWasRequested(store, topicSlug) {
+  var {topic} = store.getState();
+  return topic && topic[topicSlug];
 };

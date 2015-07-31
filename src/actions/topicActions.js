@@ -6,11 +6,11 @@ import {
 
 // TODO(jlfwong): Support articles?
 const SUPPORTED_KINDS = {
-  "Video": 1
+  "Video": 1,
   "Topic": 1
 };
 
-export function load(slug) {
+function loadTopic(slug) {
   return {
     types: [TOPIC_LOAD, TOPIC_LOAD_SUCCESS, TOPIC_LOAD_FAIL],
     promise: (client) => {
@@ -34,4 +34,12 @@ export function load(slug) {
     },
     slug: slug
   };
+}
+
+import {topicWasRequested} from '../reducers/topic';
+
+export function maybeLoadTopic(store, topicSlug) {
+  if (!topicWasRequested(store, topicSlug)) {
+    return store.dispatch(loadTopic(topicSlug));
+  }
 }

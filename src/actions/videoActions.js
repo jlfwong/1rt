@@ -4,7 +4,7 @@ import {
   VIDEO_LOAD_FAIL
 } from './actionTypes.js';
 
-export function load(readableId) {
+function loadVideo(readableId) {
   return {
     types: [VIDEO_LOAD, VIDEO_LOAD_SUCCESS, VIDEO_LOAD_FAIL],
     promise: (client) => {
@@ -19,4 +19,12 @@ export function load(readableId) {
     },
     readableId: readableId
   };
+}
+
+import {videoWasRequested} from '../reducers/video';
+
+export function maybeLoadVideo(store, readableId) {
+  if (!videoWasRequested(store, readableId)) {
+    return store.dispatch(loadVideo(readableId));
+  }
 }
