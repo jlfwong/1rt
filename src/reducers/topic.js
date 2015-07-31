@@ -4,34 +4,52 @@ import {
   TOPIC_LOAD_FAIL
 } from '../actions/actionTypes';
 
-const initialState = {};
+const initialState = {data: {}, status: {}}
 
-const LOADING = Symbol("loading");
 const ERROR = Symbol("error");
+const LOADED = Symbol("loaded");
+const LOADING = Symbol("loading");
 
 export default function topics(state = initialState, action = {}) {
   switch (action.type) {
     case TOPIC_LOAD:
       return {
-        ...state,
-        [action.slug]: LOADING
-      };
+        data: state.data,
+        status: {
+          ...state.status,
+          [action.slug]: LOADING
+        }
+      }
     case TOPIC_LOAD_SUCCESS:
       return {
-        ...state,
-        [action.slug]: action.result
-      };
+        data: {
+          ...state.data,
+          [action.slug]: action.result
+        },
+        status: {
+          ...state.status,
+          [action.slug]: LOADED
+        }
+      }
     case TOPIC_LOAD_FAIL:
       return {
-        ...state,
-        [action.slug]: ERROR
-      };
+        data: state.data,
+        status: {
+          ...state.status,
+          [action.slug]: ERROR
+        }
+      }
     default:
       return state;
   }
 }
 
+const _get = (state) => (state.topic || initialState)
+
 export function topicWasRequested(store, topicSlug) {
-  var {topic} = store.getState();
-  return topic && topic[topicSlug];
+  return !!_get(store.getState()).status[topicSlug];
 };
+
+export function getTopic(state, topicSlug) {
+  return _get(state).data[topicSlug];
+}

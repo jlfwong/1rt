@@ -28,8 +28,8 @@ const progressTitleStyle = {
 export class TutorialNavList {
   static propTypes = {
     tutorialData: PropTypes.object.isRequired,
-    activePath: PropTypes.string.isRequired,
-    domainSlug: PropTypes.string.isRequired
+    domainSlug: PropTypes.string.isRequired,
+    activePath: PropTypes.string
   }
 
   renderNavItem(child, index, children) {
@@ -40,7 +40,7 @@ export class TutorialNavList {
 
     const isActive = (activePath === url);
 
-    return <li key={child.nodeSlug}>
+    return <li key={`${child.kind}:${child.nodeSlug}`}>
       <Link to={url} style={tabLinkStyle(isActive, domainSlug)}>
         <SubwayIcon
             isLast={index === children.length - 1}

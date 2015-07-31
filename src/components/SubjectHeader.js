@@ -51,7 +51,9 @@ class SubjectHeader {
     return <div style={headerStyle(domainSlug)}>
       {ancestorTopicData &&
         ancestorTopicData.map((ancestor) => (
-          <Link to={ancestor.relativeUrl} style={breadcrumbStyle}>
+          <Link to={ancestor.relativeUrl}
+              style={breadcrumbStyle}
+              key={ancestor.title}>
             {ancestor.title}
           </Link>
         ))}

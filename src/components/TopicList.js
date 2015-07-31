@@ -1,6 +1,10 @@
 import React, {Component, PropTypes} from 'react';
 import {Link} from 'react-router';
+import {connect} from 'react-redux';
 import {getDomainColor} from '../components/colors';
+import {maybeLoadTopic} from '../actions/topicActions';
+import {TutorialNavList} from '../components/TutorialNav';
+import {getTopic} from '../reducers/topic';
 
 const topicListStyle = {
   padding: "40px 15px"
@@ -27,14 +31,54 @@ const topicTitleStyle = (domainSlug) => ({
 })
 
 export default
+@connect((state, props) => ({
+  topicDetails: props.topics.map(t => getTopic(state, t.nodeSlug))
+}))
 class TopicList {
-  renderTopic(relativeUrl, child) {
-    var {domainSlug} = this.props;
+  static propTypes = {
+    topics: PropTypes.arrayOf(PropTypes.shape({
+      title: PropTypes.string.isRequired,
+      nodeSlug: PropTypes.string.isRequired
+    })),
 
-    var url = `${relativeUrl}/${child.nodeSlug}`;
+    relativeUrl: PropTypes.string.isRequired,
 
-    return <Link to={url} style={topicListItemStyle}>
+    domainSlug: PropTypes.string.isRequired,
+
+    topicDetails: PropTypes.arrayOf(PropTypes.shape({
+      description: PropTypes.string.isRequired
+    }))
+  }
+
+  static contextTypes = {
+    store: PropTypes.object.isRequired
+  }
+
+  componentDidMount() {
+    const {topics} = this.props;
+    const {store} = this.context;
+
+    topics.forEach(t => maybeLoadTopic(store, t.nodeSlug));
+  }
+
+  renderTopic(relativeUrl, child, index) {
+    const {domainSlug, topicDetails} = this.props;
+    const details = topicDetails[index];
+
+    const url = `${relativeUrl}/${child.nodeSlug}`;
+
+    const isTutorial = (details &&
+                          details.children.some(c => c.kind !== "Topic"))
+
+    const key = `${child.kind}/${child.nodeSlug}`;
+    return <Link to={url} style={topicListItemStyle} key={key}>
       <h2 style={topicTitleStyle(domainSlug)}>{child.title}</h2>
+      {details &&
+        <div>
+          <div>{details.description}</div>
+          {isTutorial &&
+            <TutorialNavList tutorialData={details} domainSlug={domainSlug} />}
+        </div>}
     </Link>;
   }
 

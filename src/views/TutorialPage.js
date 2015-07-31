@@ -2,12 +2,12 @@ import React, {Component, PropTypes} from 'react';
 import {Link} from 'react-router';
 import {connect} from 'react-redux';
 import {maybeLoadTopic} from '../actions/topicActions';
-import {topicWasRequested} from '../reducers/topic';
+import {topicWasRequested, getTopic} from '../reducers/topic';
 import SubjectHeader from '../components/SubjectHeader';
 import {TutorialNavList} from '../components/TutorialNav';
 
 @connect((state, props) => ({
-  topicData: state.topic[props.params.tutorialSlug]
+  topicData: getTopic(state, props.params.tutorialSlug)
 }))
 export default
 class TutorialPage {

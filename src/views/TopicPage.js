@@ -1,5 +1,5 @@
 import React, {Component, PropTypes} from 'react';
-import {topicWasRequested} from '../reducers/topic';
+import {getTopic, topicWasRequested} from '../reducers/topic';
 import {connect} from 'react-redux';
 import {maybeLoadTopic} from '../actions/topicActions';
 import SubjectHeader from '../components/SubjectHeader';
@@ -7,8 +7,8 @@ import TopicList from '../components/TopicList';
 
 export default
 @connect((state, props) => ({
-  topicData: state.topic[props.params.topicSlug],
-  parentTopicData: state.topic[props.params.subjectSlug]
+  topicData: getTopic(state, props.params.topicSlug),
+  parentTopicData: getTopic(state, props.params.subjectSlug)
 }))
 class TopicPage {
   static propTypes = {
@@ -27,7 +27,7 @@ class TopicPage {
     const {parentTopicData, topicData, params} = this.props;
     return <ul>
       <SubjectHeader
-        ancestorTopicData={[parentTopicData]}
+        ancestorTopicData={[parentTopicData].filter(x => !!x)}
         title={topicData.title}
         description={topicData.description}
         domainSlug={params.domainSlug} />

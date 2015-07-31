@@ -1,13 +1,13 @@
 import React, {Component, PropTypes} from 'react';
-import {topicWasRequested} from '../reducers/topic';
 import {connect} from 'react-redux';
 import {maybeLoadTopic} from '../actions/topicActions';
 import SubjectHeader from '../components/SubjectHeader';
 import TopicList from '../components/TopicList';
+import {topicWasRequested, getTopic} from '../reducers/topic';
 
 export default
 @connect((state, props) => ({
-  topicData: state.topic[props.params.subjectSlug]
+  topicData: getTopic(state, props.params.subjectSlug)
 }))
 class SubjectPage {
   static propTypes = {

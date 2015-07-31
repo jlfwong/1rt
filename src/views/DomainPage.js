@@ -5,10 +5,11 @@ import {maybeLoadTopic} from '../actions/topicActions';
 import {Link} from 'react-router';
 import SubjectHeader from '../components/SubjectHeader';
 import TopicList from '../components/TopicList';
+import {getTopic} from '../reducers/topic';
 
 export default
 @connect((state, props) => ({
-  topicData: state.topic[props.params.domainSlug]
+  topicData: getTopic(state, props.params.domainSlug)
 }))
 class DomainPage {
   static propTypes = {

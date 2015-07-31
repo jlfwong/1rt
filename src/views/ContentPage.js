@@ -4,17 +4,20 @@ import {connect} from 'react-redux';
 import {maybeLoadTopic} from '../actions/topicActions';
 import {maybeLoadVideo} from '../actions/videoActions';
 import TutorialNav from '../components/TutorialNav';
+import {getTopic} from '../reducers/topic';
 
 export default
 @connect((state, props) => ({
-  tutorialData: state.topic[props.params.tutorialSlug],
-  parentTopicData: state.topic[props.params.topicSlug]
+  tutorialData: getTopic(state, props.params.tutorialSlug),
+  parentTopicData: getTopic(state, props.params.topicSlug)
 }))
 class ContentPage {
   static propTypes = {
-    tutorialData: PropTypes.object,
     params: PropTypes.object.isRequired,
-    location: PropTypes.object.isRequired
+    location: PropTypes.object.isRequired,
+
+    tutorialData: PropTypes.object,
+    parentTopicData: PropTypes.object,
   }
 
   static contextTypes = {
@@ -33,7 +36,7 @@ class ContentPage {
     const {tutorialData, parentTopicData, location, params} = this.props;
     const {store} = this.context;
 
-    if (tutorialData && tutorialData.children) {
+    if (tutorialData) {
       tutorialData.children
         .filter(child => child.kind === "Video")
         // .slice(3) removes the leading "v/
@@ -42,8 +45,7 @@ class ContentPage {
 
     return <div>
       {this.props.children}
-      {tutorialData && tutorialData.title &&
-       parentTopicData && parentTopicData.title &&
+      {tutorialData && parentTopicData &&
         <TutorialNav
           parentTopicData={parentTopicData}
           tutorialData={tutorialData}
