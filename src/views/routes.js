@@ -1,8 +1,9 @@
-import React from 'react';
+import React, {Component, PropTypes} from 'react';
 import {Route} from 'react-router';
 import App from 'views/App';
 import VideoPage from 'views/VideoPage';
 import TutorialPage from 'views/TutorialPage';
+import DomainPage from 'views/DomainPage';
 import NotFound from 'views/NotFound';
 import Redirect from 'views/Redirect';
 
@@ -11,12 +12,6 @@ class Dummy {
     return <div>
       {this.props.children}
     </div>;
-  }
-}
-
-class DomainPage {
-  render() {
-    return <h1>Domain</h1>;
   }
 }
 
@@ -41,14 +36,16 @@ class HomePage {
 const index = component => ({indexRoute: {component}, component: Dummy})
 
 export default (
-  <Route path="/" component={App} {...index(HomePage)}>
-    <Route path=":domainSlug" {...index(DomainPage)}>
-      <Route path=":subjectSlug" {...index(SubjectPage)}>
-        <Route path=":topicSlug" {...index(TopicPage)}>
-          <Route path=":tutorialSlug" {...index(TutorialPage)}>
-            {/* TODO(jlfwong): Rename this to ContentPage */}
-            <Route component={TutorialPage}>
-              <Route path="v/:videoReadableId" component={VideoPage} />
+  <Route component={App}>
+    <Route path="/" {...index(HomePage)}>
+      <Route path=":domainSlug" {...index(DomainPage)}>
+        <Route path=":subjectSlug" {...index(SubjectPage)}>
+          <Route path=":topicSlug" {...index(TopicPage)}>
+            <Route path=":tutorialSlug" {...index(TutorialPage)}>
+              {/* TODO(jlfwong): Rename this to ContentPage */}
+              <Route component={TutorialPage}>
+                <Route path="v/:videoReadableId" component={VideoPage} />
+              </Route>
             </Route>
           </Route>
         </Route>
