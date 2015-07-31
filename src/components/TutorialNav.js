@@ -1,7 +1,7 @@
 import React, {Component, PropTypes} from 'react';
 import SubwayIcon from '../components/SubwayIcon';
 import {Link, State as RouterState} from 'react-router';
-import {getDomainColors} from './colors';
+import {getDomainColor} from './colors';
 
 const basicBorder = `1px solid #ddd`;
 
@@ -41,8 +41,8 @@ const progressTitleStyle = {
   verticalAlign: 'middle'
 };
 
-export default
-class TutorialNav {
+
+export class TutorialNavList {
   static propTypes = {
     tutorialData: PropTypes.object.isRequired,
     activePath: PropTypes.string.isRequired,
@@ -71,6 +71,23 @@ class TutorialNav {
   render() {
     const {tutorialData} = this.props;
 
+    return <ul>
+      {tutorialData.children.map(this.renderNavItem.bind(this))}
+    </ul>;
+  }
+}
+
+export default
+class TutorialNav {
+  static propTypes = {
+    tutorialData: PropTypes.object.isRequired,
+    activePath: PropTypes.string.isRequired,
+    domainSlug: PropTypes.string.isRequired
+  }
+
+  render() {
+    const {tutorialData} = this.props;
+
     // TODO(jlfwong): Back to topic link, next tutorial link.
     return <div style={containerStyle}>
       <div style={newTopicBreadcrumbStyle}>
@@ -78,9 +95,7 @@ class TutorialNav {
           {tutorialData.title}
         </h1>
       </div>
-      <ul>
-        {tutorialData.children.map(this.renderNavItem.bind(this))}
-      </ul>
+      <TutorialNavList {...this.props} />
     </div>;
   }
 }

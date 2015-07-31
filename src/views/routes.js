@@ -1,7 +1,8 @@
 import React, {Component, PropTypes} from 'react';
 import {Route} from 'react-router';
 import App from 'views/App';
-import VideoPage from 'views/VideoPage';
+import VideoContent from 'views/VideoContent';
+import ContentPage from 'views/ContentPage';
 import TutorialPage from 'views/TutorialPage';
 import DomainPage from 'views/DomainPage';
 import SubjectPage from 'views/SubjectPage';
@@ -32,9 +33,8 @@ export default (
         <Route path=":subjectSlug" {...index(SubjectPage)}>
           <Route path=":topicSlug" {...index(TopicPage)}>
             <Route path=":tutorialSlug" {...index(TutorialPage)}>
-              {/* TODO(jlfwong): Rename this to ContentPage */}
-              <Route component={TutorialPage}>
-                <Route path="v/:videoReadableId" component={VideoPage} />
+              <Route component={ContentPage}>
+                <Route path="v/:videoReadableId" component={VideoContent} />
               </Route>
             </Route>
           </Route>

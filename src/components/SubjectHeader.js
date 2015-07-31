@@ -13,7 +13,7 @@ const subjectTitleStyle = {
   fontWeight: "normal",
   lineHeight: 1,
   textRendering: "optimizeLegibility",
-  webkitFontSmoothing: "antialiased",
+  WebkitFontSmoothing: "antialiased",
   marginBottom: "30px",
   paddingBottom: "20px"
 };
@@ -23,7 +23,7 @@ const subjectDescriptionStyle = {
   fontSize: "15px",
   fontWeight: 100,
   lineHeight: "22px",
-  webkitFontSmoothing: "antialiased"
+  WebkitFontSmoothing: "antialiased"
 };
 
 export default

@@ -20,7 +20,7 @@ class ApiClient_ {
         this[method] = (path, options) => {
           return new Promise((resolve, reject) => {
             let request = superagent[method](
-              `https://khanacademy.org/${path}`);
+              `http://localhost:8080/${path}`);
 
             if (__CLIENT__) {
               request.jsonp()

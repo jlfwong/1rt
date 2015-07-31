@@ -3,39 +3,46 @@ import {Link} from 'react-router';
 import {connect} from 'react-redux';
 import {load as loadTopic} from '../actions/topicActions';
 import {topicWasRequested} from '../reducers/topic';
-import TutorialNav from '../components/TutorialNav';
+import SubjectHeader from '../components/SubjectHeader';
+import {TutorialNavList} from '../components/TutorialNav';
 
 @connect((state, props) => {
   return {
-    tutorialData: state.topic[props.params.tutorialSlug]
+    topicData: state.topic[props.params.tutorialSlug]
   }
 })
 export default
 class TutorialPage {
   static propTypes = {
-    tutorialData: PropTypes.object,
+    topicData: PropTypes.object,
     params: PropTypes.object.isRequired,
     location: PropTypes.object.isRequired
   }
 
-  componentDidMount() {
-    const {tutorialData, dispatch, params} = this.props;
+  static fetchData(store, nextState) {
+    const promises = [];
 
-    if (!tutorialData || !tutorialData.title) {
-      dispatch(loadTopic(params.tutorialSlug));
+    if (!topicWasRequested(store.getState(), nextState.tutorialSlug)) {
+      promises.push(store.dispatch(loadTopic(nextState.tutorialSlug)));
     }
+
+    return Promise.all(promises);
   }
 
   render() {
-    const {tutorialData, location, params} = this.props;
+    const {topicData, location, params} = this.props;
 
     return <div>
-      {this.props.children}
-      {tutorialData && tutorialData.title &&
-        <TutorialNav
-          tutorialData={tutorialData}
-          activePath={location.pathname}
-          domainSlug={params.domainSlug} />}
+      <div style={{marginBottom: 20}}>
+        <SubjectHeader
+          title={topicData.title}
+          description={topicData.description}
+          domainSlug={params.domainSlug} />
+      </div>
+      <TutorialNavList
+        tutorialData={topicData}
+        activePath={location.pathname}
+        domainSlug={params.domainSlug} />
     </div>
   }
 }

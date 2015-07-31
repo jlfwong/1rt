@@ -23,7 +23,7 @@ const descriptionBoxStyle = {
   }
 })
 export default
-class VideoPage {
+class VideoContent {
   static propTypes = {
     videoData: PropTypes.object.isRequired,
     params: PropTypes.object.isRequired

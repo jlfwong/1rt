@@ -2,7 +2,8 @@ import React, {Component, PropTypes} from 'react';
 import {topicWasRequested} from '../reducers/topic';
 import {connect} from 'react-redux';
 import {load as loadTopic} from '../actions/topicActions';
-import {Link} from 'react-router';
+import SubjectHeader from '../components/SubjectHeader';
+import TopicList from '../components/TopicList';
 
 export default
 @connect((state, props) => {
@@ -26,22 +27,17 @@ class TopicPage {
     return Promise.all(promises);
   }
 
-  renderSubject(relativeUrl, child) {
-    var {params} = this.props;
-
-    var url = `${relativeUrl}/${child.nodeSlug}`;
-
-    return <li>
-      <Link to={url}>
-        {child.title}
-      </Link>
-    </li>;
-  }
-
   render() {
-    const {topicData} = this.props;
+    const {topicData, params} = this.props;
     return <ul>
-      {topicData.children.map(this.renderSubject.bind(this, topicData.relativeUrl))}
+      <SubjectHeader
+        title={topicData.title}
+        description={topicData.description}
+        domainSlug={params.domainSlug} />
+      <TopicList
+        topics={topicData.children}
+        relativeUrl={topicData.relativeUrl}
+        domainSlug={params.domainSlug} />
     </ul>;
   }
 }

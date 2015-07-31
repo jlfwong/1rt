@@ -18,7 +18,8 @@ export function load(slug) {
             children: data.children.map(child => {
               return {
                 kind: child.kind,
-                title: child.title,
+                title: child.translatedTitle,
+                description: child.translatedDescription,
                 nodeSlug: child.nodeSlug
               };
             })
