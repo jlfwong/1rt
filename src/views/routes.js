@@ -4,6 +4,8 @@ import App from 'views/App';
 import VideoPage from 'views/VideoPage';
 import TutorialPage from 'views/TutorialPage';
 import DomainPage from 'views/DomainPage';
+import SubjectPage from 'views/SubjectPage';
+import TopicPage from 'views/TopicPage';
 import NotFound from 'views/NotFound';
 import Redirect from 'views/Redirect';
 
@@ -12,18 +14,6 @@ class Dummy {
     return <div>
       {this.props.children}
     </div>;
-  }
-}
-
-class SubjectPage {
-  render() {
-    return <h1>Subject</h1>;
-  }
-}
-
-class TopicPage {
-  render() {
-    return <h1>Topic</h1>;
   }
 }
 

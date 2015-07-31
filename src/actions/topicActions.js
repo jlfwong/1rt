@@ -12,7 +12,8 @@ export function load(slug) {
         .get(`api/v1/topic/${slug}?casing=camel`)
         .then(data => {
           return {
-            title: data.title,
+            title: data.translatedTitle,
+            description: data.translatedDescription,
             relativeUrl: data.relativeUrl,
             children: data.children.map(child => {
               return {

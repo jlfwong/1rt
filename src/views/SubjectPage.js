@@ -3,14 +3,15 @@ import {topicWasRequested} from '../reducers/topic';
 import {connect} from 'react-redux';
 import {load as loadTopic} from '../actions/topicActions';
 import {Link} from 'react-router';
+import SubjectHeader from '../components/SubjectHeader';
 
 export default
 @connect((state, props) => {
   return {
-    topicData: state.topic[props.params.domainSlug]
+    topicData: state.topic[props.params.subjectSlug]
   }
 })
-class DomainPage {
+class SubjectPage {
   static propTypes = {
     params: PropTypes.object.isRequired,
     topicData: PropTypes.object.isRequired
@@ -19,8 +20,8 @@ class DomainPage {
   static fetchData(store, nextState) {
     const promises = [];
 
-    if (!topicWasRequested(store.getState(), nextState.domainSlug)) {
-      promises.push(store.dispatch(loadTopic(nextState.domainSlug)));
+    if (!topicWasRequested(store.getState(), nextState.subjectSlug)) {
+      promises.push(store.dispatch(loadTopic(nextState.subjectSlug)));
     }
 
     return Promise.all(promises);
@@ -39,10 +40,16 @@ class DomainPage {
   }
 
   render() {
-    const {topicData} = this.props;
-    return <ul>
-      {topicData.children.map(this.renderSubject.bind(this, topicData.relativeUrl))}
-    </ul>;
+    const {topicData, params} = this.props;
+    return <div>
+      <SubjectHeader
+        title={topicData.title}
+        description={topicData.description}
+        domainSlug={params.domainSlug} />
+      <ul>
+        {topicData.children.map(this.renderSubject.bind(this, topicData.relativeUrl))}
+      </ul>;
+    </div>
   }
 }
 

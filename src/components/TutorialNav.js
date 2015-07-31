@@ -1,6 +1,7 @@
 import React, {Component, PropTypes} from 'react';
 import SubwayIcon from '../components/SubwayIcon';
 import {Link, State as RouterState} from 'react-router';
+import {getDomainColors} from './colors';
 
 const basicBorder = `1px solid #ddd`;
 
@@ -21,18 +22,6 @@ const newTopicBreadcrumbStyle = {
   padding: "14px 14px 14px 24px"
 };
 
-const domainColors = {
-  "default": "#314453",
-  "science": "#94424f",
-  "humanities": "#ad3434",
-  "economics": "#b77033",
-  "cs": "#437a39",
-  "partner-content": "#218270",
-  "math": "#1c758a",
-  "test-prep": "#644172",
-  "sat": "#0084ce",
-};
-
 const tabLinkStyle = (isActive, domainSlug) => ({
   display: 'block',
   fontSize: '13px',
@@ -41,9 +30,7 @@ const tabLinkStyle = (isActive, domainSlug) => ({
   paddingLeft: '10px',
   color: (isActive ? '#fff' : '#555'),
   position: 'relative',
-  background: (isActive ?
-                domainColors[domainSlug] || domainColors["default"] :
-                'inherit')
+  background: (isActive ? getDomainColor(domainSlug) : 'inherit')
 });
 
 const progressTitleStyle = {
@@ -84,6 +71,7 @@ class TutorialNav {
   render() {
     const {tutorialData} = this.props;
 
+    // TODO(jlfwong): Back to topic link, next tutorial link.
     return <div style={containerStyle}>
       <div style={newTopicBreadcrumbStyle}>
         <h1 style={tutorialTitleStyle}>

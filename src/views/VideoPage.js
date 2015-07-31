@@ -42,14 +42,14 @@ class VideoPage {
   render() {
     const {videoData} = this.props;
 
-    const youtubeId = videoData['translatedYoutubeId'];
+    const youtubeId = videoData.youtubeId;
     const youtubeEmbedUrl = `https://www.youtube.com/embed/${youtubeId}`;
 
     return <div>
       <iframe type="text/html" width="100%" height={192} src={youtubeEmbedUrl} style={{marginBottom: '8px'}} />
       <div style={descriptionBoxStyle}>
-        <p style={videoTitleStyle}>{videoData.translatedTitle}</p>
-        <p>{videoData.translatedDescription}</p>
+        <p style={videoTitleStyle}>{videoData.title}</p>
+        <p>{videoData.description}</p>
       </div>
     </div>
   }

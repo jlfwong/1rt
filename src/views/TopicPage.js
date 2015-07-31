@@ -7,10 +7,10 @@ import {Link} from 'react-router';
 export default
 @connect((state, props) => {
   return {
-    topicData: state.topic[props.params.domainSlug]
+    topicData: state.topic[props.params.topicSlug]
   }
 })
-class DomainPage {
+class TopicPage {
   static propTypes = {
     params: PropTypes.object.isRequired,
     topicData: PropTypes.object.isRequired
@@ -19,8 +19,8 @@ class DomainPage {
   static fetchData(store, nextState) {
     const promises = [];
 
-    if (!topicWasRequested(store.getState(), nextState.domainSlug)) {
-      promises.push(store.dispatch(loadTopic(nextState.domainSlug)));
+    if (!topicWasRequested(store.getState(), nextState.topicSlug)) {
+      promises.push(store.dispatch(loadTopic(nextState.topicSlug)));
     }
 
     return Promise.all(promises);

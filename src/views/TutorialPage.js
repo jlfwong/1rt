@@ -13,7 +13,7 @@ import TutorialNav from '../components/TutorialNav';
 export default
 class TutorialPage {
   static propTypes = {
-    tutorialData: PropTypes.object.isRequired,
+    tutorialData: PropTypes.object,
     params: PropTypes.object.isRequired,
     location: PropTypes.object.isRequired
   }
