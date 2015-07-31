@@ -3,6 +3,8 @@ import {topicWasRequested} from '../reducers/topic';
 import {connect} from 'react-redux';
 import {load as loadTopic} from '../actions/topicActions';
 import {Link} from 'react-router';
+import SubjectHeader from '../components/SubjectHeader';
+import TopicList from '../components/TopicList';
 
 export default
 @connect((state, props) => {
@@ -39,10 +41,17 @@ class DomainPage {
   }
 
   render() {
-    const {topicData} = this.props;
-    return <ul>
-      {topicData.children.map(this.renderSubject.bind(this, topicData.relativeUrl))}
-    </ul>;
+    const {topicData, params} = this.props;
+    return <div>
+      <SubjectHeader
+        title={topicData.title}
+        description={topicData.description}
+        domainSlug={params.domainSlug} />
+      <TopicList
+        topics={topicData.children}
+        relativeUrl={topicData.relativeUrl}
+        domainSlug={params.domainSlug} />
+    </div>;
   }
 }
 
