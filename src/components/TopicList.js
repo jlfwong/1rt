@@ -70,16 +70,17 @@ class TopicList {
     const isTutorial = (details &&
                           details.children.some(c => c.kind !== "Topic"))
 
-    const key = `${child.kind}/${child.nodeSlug}`;
-    return <Link to={url} style={topicListItemStyle} key={key}>
-      <h2 style={topicTitleStyle(domainSlug)}>{child.title}</h2>
+    return <div style={topicListItemStyle} key={child.nodeSlug}>
+      <Link to={url} style={topicListItemStyle}>
+        <h2 style={topicTitleStyle(domainSlug)}>{child.title}</h2>
+      </Link>
       {details &&
         <div>
           <div>{details.description}</div>
           {isTutorial &&
             <TutorialNavList tutorialData={details} domainSlug={domainSlug} />}
         </div>}
-    </Link>;
+    </div>;
   }
 
   render() {
