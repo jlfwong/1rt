@@ -6,6 +6,9 @@ import {maybeLoadTopic} from '../actions/topicActions';
 import {TutorialNavList} from '../components/TutorialNav';
 import {getTopic} from '../reducers/topic';
 
+// TODO(jlfwong): De-dep this with TutorialNav.js
+const basicBorder = `1px solid #ddd`;
+
 const topicListStyle = {
   padding: "40px 15px"
 }
@@ -19,6 +22,7 @@ const topicListItemStyle = {
   position: "relative",
   textDecoration: "none",
   zIndex: "2",
+  borderBottom: basicBorder
 };
 
 const topicTitleStyle = (domainSlug) => ({
@@ -70,8 +74,11 @@ class TopicList {
     const isTutorial = (details &&
                           details.children.some(c => c.kind !== "Topic"))
 
+    // TODO(jlfwong): Aggressively fetch data for tutorial content? This could
+    // get to be a lot of requests if we fetch data for all tutorial nodes in
+    // a topic.
     return <div style={topicListItemStyle} key={child.nodeSlug}>
-      <Link to={url} style={topicListItemStyle}>
+      <Link to={url}>
         <h2 style={topicTitleStyle(domainSlug)}>{child.title}</h2>
       </Link>
       {details &&
