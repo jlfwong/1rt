@@ -22,6 +22,7 @@ Run `make deploy` or read on for the details of what it does.
           --zone us-central1-a \
           --machine-type f1-micro \
           --tags http-server \
+          --address hackathon-1rt \
           --metadata-from-file google-container-manifest=containers.yaml
 
  5. (Optional) SSH in to the VM and make sure the container is created.

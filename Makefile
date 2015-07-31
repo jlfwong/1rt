@@ -14,4 +14,5 @@ deploy: build
 	  --zone us-central1-a \
 	  --machine-type f1-micro \
 	  --tags http-server \
+	  --address hackathon-1rt \
 	  --metadata-from-file google-container-manifest=containers.yaml
