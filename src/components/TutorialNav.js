@@ -76,7 +76,9 @@ const newTopicBreadcrumbStyle = {
 };
 
 const tutorialNavNextStyle = {
-  padding: "14px 14px 14px 24px"
+  display: "block",
+  padding: "14px 14px 14px 24px",
+  color: '#555'
 };
 
 const tutorialNavNextLabelStyle = {
@@ -135,12 +137,11 @@ class TutorialNav {
         <TutorialNavList {...this.props} />
       </div>
       {nextTutorialData &&
-        <div style={tutorialNavNextStyle}>
+        <Link to={`${parentTopicData.relativeUrl}/${nextTutorialData.nodeSlug}`}
+              style={tutorialNavNextStyle}>
           <div style={tutorialNavNextLabelStyle}>Next Section:</div>
-          <Link to={`${parentTopicData.relativeUrl}/${nextTutorialData.nodeSlug}`}>
-            {nextTutorialData.title}
-          </Link>
-        </div>}
+          {nextTutorialData.title}
+        </Link>}
     </div>;
   }
 }
