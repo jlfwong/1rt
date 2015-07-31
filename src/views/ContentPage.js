@@ -2,6 +2,7 @@ import React, {Component, PropTypes} from 'react';
 import {Link} from 'react-router';
 import {connect} from 'react-redux';
 import {maybeLoadTopic} from '../actions/topicActions';
+import {maybeLoadVideo} from '../actions/videoActions';
 import TutorialNav from '../components/TutorialNav';
 
 export default
@@ -30,6 +31,14 @@ class ContentPage {
 
   render() {
     const {tutorialData, parentTopicData, location, params} = this.props;
+    const {store} = this.context;
+
+    if (tutorialData && tutorialData.children) {
+      tutorialData.children
+        .filter(child => child.kind === "Video")
+        // .slice(3) removes the leading "v/
+        .forEach(child => maybeLoadVideo(store, child.nodeSlug.slice(2)));
+    }
 
     return <div>
       {this.props.children}
