@@ -4,6 +4,12 @@ import {
   TOPIC_LOAD_FAIL,
 } from './actionTypes.js';
 
+// TODO(jlfwong): Support articles?
+const SUPPORTED_KINDS = {
+  "Video": 1
+  "Topic": 1
+};
+
 export function load(slug) {
   return {
     types: [TOPIC_LOAD, TOPIC_LOAD_SUCCESS, TOPIC_LOAD_FAIL],
@@ -22,7 +28,7 @@ export function load(slug) {
                 description: child.translatedDescription,
                 nodeSlug: child.nodeSlug
               };
-            })
+            }).filter(child => SUPPORTED_KINDS[child.kind])
           };
         });
     },

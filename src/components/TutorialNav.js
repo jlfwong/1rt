@@ -5,23 +5,6 @@ import {getDomainColor} from './colors';
 
 const basicBorder = `1px solid #ddd`;
 
-const containerStyle = {
-  background: '#f7f7f7',
-  border: basicBorder,
-  margin: '0 10px 40px 10px'
-};
-
-const tutorialTitleStyle = {
-  color: '#444',
-  fontSize: '18',
-  marginBottom: 0
-};
-
-const newTopicBreadcrumbStyle = {
-  borderBottom: basicBorder,
-  padding: "14px 14px 14px 24px"
-};
-
 const tabLinkStyle = (isActive, domainSlug) => ({
   display: 'block',
   fontSize: '13px',
@@ -75,22 +58,53 @@ export class TutorialNavList {
       {tutorialData.children.map(this.renderNavItem.bind(this))}
     </ul>;
   }
-}
+};
+
+const containerStyle = {
+  background: '#f7f7f7',
+  border: basicBorder,
+  margin: '0 10px 40px 10px'
+};
+
+const newTopicBreadcrumbStyle = {
+  borderBottom: basicBorder,
+  padding: "14px 14px 14px 24px"
+};
+
+const tutorialTitleStyle = {
+  color: '#444',
+  fontSize: '18',
+  marginBottom: 1
+};
+
+const topicTitleStyle = (domainSlug) => ({
+    display: "block",
+    lineHeight: "1.3",
+    margin: "10px 0",
+    textTransform: "uppercase",
+    color: getDomainColor(domainSlug)
+})
 
 export default
 class TutorialNav {
   static propTypes = {
+    parentTopicData: PropTypes.object.isRequired,
     tutorialData: PropTypes.object.isRequired,
     activePath: PropTypes.string.isRequired,
     domainSlug: PropTypes.string.isRequired
   }
 
   render() {
-    const {tutorialData} = this.props;
+    const {parentTopicData, domainSlug, tutorialData} = this.props;
 
     // TODO(jlfwong): Back to topic link, next tutorial link.
     return <div style={containerStyle}>
       <div style={newTopicBreadcrumbStyle}>
+        <Link
+            to={parentTopicData.relativeUrl}
+            style={topicTitleStyle(domainSlug)}>
+          {parentTopicData.title}
+        </Link>
         <h1 style={tutorialTitleStyle}>
           {tutorialData.title}
         </h1>

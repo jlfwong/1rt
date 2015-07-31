@@ -15,8 +15,20 @@ export default
 class TutorialPage {
   static propTypes = {
     topicData: PropTypes.object,
-    params: PropTypes.object.isRequired,
-    location: PropTypes.object.isRequired
+    params: PropTypes.object.isRequired
+  }
+
+  static contextTypes = {
+    router: PropTypes.object.isRequired
+  }
+
+  componentDidMount() {
+    const {topicData, location, params} = this.props;
+    const {router} = this.context;
+
+    // Redirect to the first content node in the tutorial.
+    router.replaceWith(
+            `${topicData.relativeUrl}/${topicData.children[0].nodeSlug}`);
   }
 
   static fetchData(store, nextState) {
@@ -30,19 +42,8 @@ class TutorialPage {
   }
 
   render() {
-    const {topicData, location, params} = this.props;
+    const {topicData, params} = this.props;
 
-    return <div>
-      <div style={{marginBottom: 20}}>
-        <SubjectHeader
-          title={topicData.title}
-          description={topicData.description}
-          domainSlug={params.domainSlug} />
-      </div>
-      <TutorialNavList
-        tutorialData={topicData}
-        activePath={location.pathname}
-        domainSlug={params.domainSlug} />
-    </div>
+    return <div />;
   }
 }

@@ -7,7 +7,8 @@ import TutorialNav from '../components/TutorialNav';
 
 @connect((state, props) => {
   return {
-    tutorialData: state.topic[props.params.tutorialSlug]
+    tutorialData: state.topic[props.params.tutorialSlug],
+    parentTopicData: state.topic[props.params.topicSlug]
   }
 })
 export default
@@ -19,20 +20,26 @@ class ContentPage {
   }
 
   componentDidMount() {
-    const {tutorialData, dispatch, params} = this.props;
+    const {tutorialData, parentTopicData, dispatch, params} = this.props;
 
     if (!tutorialData || !tutorialData.title) {
       dispatch(loadTopic(params.tutorialSlug));
     }
+
+    if (!parentTopicData || !parentTopicData.title) {
+      dispatch(loadTopic(params.topicSlug));
+    }
   }
 
   render() {
-    const {tutorialData, location, params} = this.props;
+    const {tutorialData, parentTopicData, location, params} = this.props;
 
     return <div>
       {this.props.children}
       {tutorialData && tutorialData.title &&
+       parentTopicData && parentTopicData.title &&
         <TutorialNav
+          parentTopicData={parentTopicData}
           tutorialData={tutorialData}
           activePath={location.pathname}
           domainSlug={params.domainSlug} />}
