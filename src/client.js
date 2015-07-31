@@ -23,9 +23,10 @@ universalRouter(location, history, store)
         ' invalid." message. That\'s because the redux-devtools are enabled.');
       React.render(<div>
         {component}
+        {/*
         <DebugPanel top right bottom key="debugPanel">
           <DevTools store={store} monitor={LogMonitor}/>
-        </DebugPanel>
+        </DebugPanel>*/}
       </div>, dest);
     } else {
       React.render(component, dest);
