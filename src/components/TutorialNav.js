@@ -66,10 +66,23 @@ const containerStyle = {
   margin: '0 10px 40px 10px'
 };
 
+const tutorialNavSectionStyle = {
+  borderBottom: basicBorder,
+}
+
 const newTopicBreadcrumbStyle = {
   borderBottom: basicBorder,
   padding: "14px 14px 14px 24px"
 };
+
+const tutorialNavNextStyle = {
+  padding: "14px 14px 14px 24px"
+};
+
+const tutorialNavNextLabelStyle = {
+  color: '#aaa',
+  textTransform: 'uppercase'
+}
 
 const tutorialTitleStyle = {
   color: '#444',
@@ -97,7 +110,16 @@ class TutorialNav {
   render() {
     const {parentTopicData, domainSlug, tutorialData} = this.props;
 
-    // TODO(jlfwong): Back to topic link, next tutorial link.
+    let tutorialIndexInTopic = null;
+    parentTopicData.children.forEach((child, index) => {
+      if (child.nodeSlug === tutorialData.nodeSlug) {
+        tutorialIndexInTopic = index;
+      }
+    });
+
+    const nextTutorialData = (tutorialIndexInTopic !== null &&
+                              parentTopicData.children[tutorialIndexInTopic + 1]);
+
     return <div style={containerStyle}>
       <div style={newTopicBreadcrumbStyle}>
         <Link
@@ -109,7 +131,16 @@ class TutorialNav {
           {tutorialData.title}
         </h1>
       </div>
-      <TutorialNavList {...this.props} />
+      <div style={tutorialNavSectionStyle}>
+        <TutorialNavList {...this.props} />
+      </div>
+      {nextTutorialData &&
+        <div style={tutorialNavNextStyle}>
+          <div style={tutorialNavNextLabelStyle}>Next Section:</div>
+          <Link to={`${parentTopicData.relativeUrl}/${nextTutorialData.nodeSlug}`}>
+            {nextTutorialData.title}
+          </Link>
+        </div>}
     </div>;
   }
 }

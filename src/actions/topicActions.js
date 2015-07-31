@@ -21,6 +21,7 @@ function loadTopic(slug) {
             title: data.translatedTitle,
             description: data.translatedDescription,
             relativeUrl: data.relativeUrl,
+            nodeSlug: data.nodeSlug,
             children: data.children.map(child => {
               return {
                 kind: child.kind,
