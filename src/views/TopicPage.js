@@ -7,7 +7,8 @@ import TopicList from '../components/TopicList';
 
 export default
 @connect((state, props) => ({
-  topicData: state.topic[props.params.topicSlug]
+  topicData: state.topic[props.params.topicSlug],
+  parentTopicData: state.topic[props.params.subjectSlug]
 }))
 class TopicPage {
   static propTypes = {
@@ -16,13 +17,17 @@ class TopicPage {
   }
 
   static fetchData(store, nextParams) {
-    return maybeLoadTopic(store, [nextParams.topicSlug]);
+    return Promise.all([
+      maybeLoadTopic(store, nextParams.topicSlug),
+      maybeLoadTopic(store, nextParams.subjectSlug)
+    ])
   }
 
   render() {
-    const {topicData, params} = this.props;
+    const {parentTopicData, topicData, params} = this.props;
     return <ul>
       <SubjectHeader
+        ancestorTopicData={[parentTopicData]}
         title={topicData.title}
         description={topicData.description}
         domainSlug={params.domainSlug} />
