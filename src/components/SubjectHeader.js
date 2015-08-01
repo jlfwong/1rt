@@ -53,8 +53,8 @@ class SubjectHeader {
         ancestorTopicData.map((ancestor) => (
           <Link to={ancestor.relativeUrl}
               style={breadcrumbStyle}
-              key={ancestor.title}>
-            {ancestor.title}
+              key={ancestor.id}>
+            {ancestor.translatedTitle}
           </Link>
         ))}
       <h1 style={subjectTitleStyle}>{title}</h1>

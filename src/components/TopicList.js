@@ -41,8 +41,14 @@ export default
   return {subTopicData}
 })
 class TopicList {
-  static fetchData(store, topicSlug) {
-    return [`topic:${topicSlug}/*`]
+  static fetchData(store, topicSlug, isTopic) {
+    if (isTopic) {
+      // If we're in a Topic, then we'll fetch two levels of hierarchy down so
+      // we can render the tutorial nav inline.
+      return [`topic:${topicSlug}/*/*`]
+    } else {
+      return [`topic:${topicSlug}/*`]
+    }
   }
 
   renderTopic(relativeUrl, child) {
@@ -58,9 +64,9 @@ class TopicList {
       </Link>
       <div>
         <div>{child.translatedDescription}</div>
-        {/* TODO(jlfwong): Figure out why this crashes 
-          {isTutorial &&
-            <TutorialNavList tutorialData={child} domainSlug={domainSlug} />*/}
+        {isTutorial && <TutorialNavList
+                          tutorialData={child}
+                          domainSlug={domainSlug} />}
       </div>
     </div>;
   }

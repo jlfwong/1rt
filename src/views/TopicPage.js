@@ -22,8 +22,9 @@ class TopicPage {
   static fetchData(store, nextParams) {
     return [
       `topic:${nextParams.subjectSlug}`,
-      `topic:${nextParams.topicSlug}/*`
-    ];
+      `topic:${nextParams.topicSlug}`
+    ].concat(
+      TopicList.DecoratedComponent.fetchData(store, nextParams.topicSlug, true));
   }
 
   render() {
