@@ -82,4 +82,18 @@ suite('TopicTree', () => {
                                         videos: ["x1", "x2"]})
     })
   });
+
+  suite('getDataForPaths', () => {
+    const transformed = TopicTree.transformData(testData);
+
+    const assertDataForPaths = (paths, {topics, videos}) => {
+      const data = TopicTree.getDataForPaths(paths, transformed);
+      assert.deepEqual(data.topics.map(x => x.id), topics || []);
+      assert.deepEqual(data.videos.map(x => x.id), videos || []);
+    }
+
+    test('videos', () => {
+      assertDataForPaths(["video:a", "video:b"], {videos: ["x1", "x2"]})
+    })
+  })
 });

@@ -36,6 +36,17 @@ const uniqBy = (list, key) => (
   }), {seen: {}, ret: []}).ret
 )
 
+const debug = (fn) => (...args) => {
+  console.log("Arg:", ...args);
+  const ret = fn(...args);
+  console.log("Ret:", ret);
+  return ret;
+}
+
+const uniqDataMergeByIds = (a, b) => ({
+  topics: uniqBy(a.topics.concat(b.topics), "id"),
+  videos: uniqBy(a.videos.concat(b.videos), "id")
+})
 
 const TopicTree = {
   // TODO(jlfwong): Make this actually download data from KA instead of just
@@ -61,22 +72,18 @@ const TopicTree = {
       allData = _DATA;
     }
     const {videosBySlug, videosById, topicsBySlug, topicsById} = allData;
-    const defaultReturn = {
-      topics: [],
-      videos: []
-    }
 
     const _get = segments => {
       const [type, arg] = segments[segments.length - 1].split(":");
 
       return {
         video: (slug) => ({
-          ...defaultReturn,
+          topics: [],
           videos: [videosBySlug[slug]]
         }),
         topic: (slug) => ({
-          ...defaultReturn,
-          topics: [topicsBySlug[slug]]
+          topics: [topicsBySlug[slug]],
+          videos: []
         }),
         '*': () => {
           const parentData = _get(segments.slice(0, segments.length - 1));
@@ -86,22 +93,23 @@ const TopicTree = {
             return ret.concat(topic.childData);
           }, []);
 
-          const childVideos = allChildren.filter(c => c.kind === "Video")
-                                  .map(c => videosById[c.id]);
-          const childTopics = allChildren.filter(c => c.kind === "Topic")
-                                  .map(c => topicsById[c.id]);
-
-          return {
-            ...defaultReturn,
-            // TODO(jlfwong): Uniquify
-            videos: uniqBy(parentData.videos.concat(childVideos), "id"),
-            topics: uniqBy(parentData.topics.concat(childTopics), "id")
-          }
+          return uniqDataMergeByIds(parentData, {
+            topics: allChildren.filter(c => c.kind === "Topic")
+                                  .map(c => topicsById[c.id]),
+            videos: allChildren.filter(c => c.kind === "Video")
+                                  .map(c => videosById[c.id])
+          })
         }
       }[type](arg)
     }
 
     return _get(path.split("/"));
+  },
+
+  getDataForPaths(paths, allData) {
+    return paths.reduce((ret, path) => (
+      uniqDataMergeByIds(ret, TopicTree.getDataForPath(path, allData))
+    ), {topics: [], videos: []})
   }
 }
 

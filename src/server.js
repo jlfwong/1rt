@@ -15,6 +15,7 @@ import serialize from 'serialize-javascript';
 import Header from './components/Header';
 import http from 'http';
 import http2 from 'http2';
+import TopicTree from './TopicTree';
 
 const pretty = new PrettyError();
 const app = new Express();
@@ -53,12 +54,13 @@ const body = (webpackStats, component, store) => `
 
 const epilogue = `</body></html>`;
 
-app.use((req, res) => {
-  /*
-  res.setHeader('Content-Type', 'text/html; charset=UTF-8');
-  res.setHeader('Transfer-Encoding', 'chunked');
-  */
+TopicTree.refreshData();
 
+app.use('/api', (req, res) => {
+  res.send(TopicTree.getDataForPath(req.path));
+});
+
+app.use((req, res) => {
   if (__DEVELOPMENT__) {
     webpackStats = require('../webpack-stats.json');
     // Do not cache webpack stats: the script file would change since
