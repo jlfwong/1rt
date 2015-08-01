@@ -8,7 +8,9 @@ build:
 deploy: build
 	docker tag -f $(USER)/1rt b.gcr.io/ka_container_registry/1rt
 	gcloud docker push b.gcr.io/ka_container_registry/1rt
-	gcloud compute instances delete hackathon-1rt --delete-disks=all
+	gcloud compute instances delete hackathon-1rt \
+	  --delete-disks=all \
+	  --zone us-central1-a
 	gcloud compute instances create hackathon-1rt \
 	  --image container-vm \
 	  --zone us-central1-a \
