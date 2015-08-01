@@ -21,19 +21,45 @@ const frameStyle = {
   marginBottom: '8px',
   backgroundColor: '#000'
 };
-const frameOverlayStyle = {
-  ...frameStyle,
-  position: 'absolute',
-  backgroundPosition: 'center',
-  backgroundRepeat: 'no-repeat',
-  backgroundSize: 'cover'
+
+export default
+class YouTubePlayer extends Component {
+  static propTypes = {
+    style: PropTypes.object.isRequired,
+    youtubeId: PropTypes.string.isRequired
+  }
+
+  constructor(props) {
+    super(props);
+    this.state = { showOverlay: true };
+  }
+
+  hideOverlay() {
+    this.setState({ showOverlay: false });
+  }
+
+  render() {
+    const overlayStyle = {
+      ...this.props.style,
+      position: 'absolute',
+      backgroundPosition: 'center',
+      backgroundRepeat: 'no-repeat',
+      backgroundSize: 'cover',
+      backgroundImage: `url(https://i.ytimg.com/vi/${this.props.youtubeId}/hqdefault.jpg)`
+    };
+    const overlay = this.state.showOverlay ? <div style={overlayStyle} /> : "";
+    return <div style={this.props.style}>
+      {overlay}
+      <iframe type="text/html" src={`https://www.youtube.com/embed/${this.props.youtubeId}`} width={this.props.style.width} height={this.props.style.height} onLoad={this.hideOverlay.bind(this)} />;
+    </div>;
+  }
 };
 
 @connect((state, props) => ({
   videoData: state.video[props.params.videoReadableId]
 }))
 export default
-class VideoContent extends Component {
+class VideoContent {
   static propTypes = {
     videoData: PropTypes.object.isRequired,
     params: PropTypes.object.isRequired
@@ -43,48 +69,21 @@ class VideoContent extends Component {
     return maybeLoadVideo(store, nextParams.videoReadableId);
   }
 
-  constructor(props) {
-    super(props);
-    this.state = { showOverlay: true };
-  }
-
-  componentDidMount() {
-    const videoNode = React.findDOMNode(this.refs.video);
-    if (videoNode) {
-      videoNode.addEventListener('play', this.hideOverlay.bind(this), false);
-    }
-  }
-
-  hideOverlay() {
-    this.setState({ showOverlay: false });
-  }
-
   render() {
     const {videoData} = this.props;
-    const useYouTubePlayer = false;
-    const useOverlay = useYouTubePlayer;  // useful in hiding YT's loading time
-
     const youtubeId = videoData.youtubeId;
-    const youtubeEmbedUrl = `https://www.youtube.com/embed/${youtubeId}`;
-    const directMp4Url = `http://fastly.kastatic.org/KA-youtube-converted/${youtubeId}.mp4/${youtubeId}.mp4 `;
-
-    const overlayStyle = {
-      ...frameOverlayStyle,
-      backgroundImage: `url(https://i.ytimg.com/vi/${youtubeId}/hqdefault.jpg)`
-    };
-    const overlay = this.state.showOverlay ? <div style={overlayStyle} /> : "";
+    const useYouTubePlayer = false;
 
     let player;
     if (useYouTubePlayer) {
-      player = <iframe type="text/html" src={youtubeEmbedUrl} style={frameStyle} onLoad={this.hideOverlay.bind(this)} />;
+      player = <YouTubePlayer style={frameStyle} youtubeId={youtubeId} />;
     } else {
-      player = <video ref="video" style={frameStyle} controls>
-          <source src={directMp4Url} type="video/mp4" />
+      player = <video key={youtubeId} style={frameStyle} controls poster={`https://i.ytimg.com/vi/${youtubeId}/hqdefault.jpg`}>
+          <source src={`http://fastly.kastatic.org/KA-youtube-converted/${youtubeId}.mp4/${youtubeId}.mp4`} type="video/mp4" />
         </video>;
     }
 
     return <div>
-      {useOverlay && overlay}
       {player}
       <div style={descriptionBoxStyle}>
         <p style={videoTitleStyle}>{videoData.title}</p>
