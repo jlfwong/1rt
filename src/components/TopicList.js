@@ -1,8 +1,9 @@
 import React, {Component, PropTypes} from 'react';
 import {Link} from 'react-router';
-import {connect} from 'react-redux';
+import {connect, Connector} from 'react-redux';
 import {getDomainColor} from '../components/colors';
 import {TutorialNavList} from '../components/TutorialNav';
+import {getTopicBySlug, getTopicById} from '../reducers/topictree';
 
 // TODO(jlfwong): De-dep this with TutorialNav.js
 const basicBorder = `1px solid #ddd`;
@@ -33,17 +34,21 @@ const topicTitleStyle = (domainSlug) => ({
 })
 
 export default
+@connect((state, props) => {
+  const {topicData} = props;
+
+  const subTopicData = topicData.childData.map(c => getTopicById(state, c.id))
+                            .filter(x => !!x)
+  return {subTopicData}
+})
 class TopicList {
   renderTopic(relativeUrl, child) {
     const {domainSlug} = this.props;
 
     const url = `${relativeUrl}/${child.slug}`;
 
-    const isTutorial = (child.childData.some(c => c.kind !== "Topic"))
+    const isTutorial = (child.childData.some(c => c.kind === "Video"))
 
-    // TODO(jlfwong): Aggressively fetch data for tutorial content? This could
-    // get to be a lot of requests if we fetch data for all tutorial nodes in
-    // a topic.
     return <div style={topicListItemStyle} key={child.slug}>
       <Link to={url}>
         <h2 style={topicTitleStyle(domainSlug)}>{child.translatedTitle}</h2>
@@ -58,10 +63,10 @@ class TopicList {
   }
 
   render() {
-    const {topics, relativeUrl} = this.props;
+    const {topicData, subTopicData} = this.props;
 
     return <div style={topicListStyle}>
-      {topics.map(this.renderTopic.bind(this, relativeUrl))}
+      {subTopicData.map(this.renderTopic.bind(this, topicData.relativeUrl))}
     </div>;
   }
 }

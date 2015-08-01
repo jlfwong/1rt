@@ -1,7 +1,9 @@
 import React, {Component, PropTypes} from 'react';
 import SubwayIcon from '../components/SubwayIcon';
 import {Link, State as RouterState} from 'react-router';
+import {connect} from 'react-redux';
 import {getDomainColor} from './colors';
+import {getTopicBySlug, getTopicById, getVideoById} from '../reducers/topictree';
 
 const basicBorder = `1px solid #ddd`;
 
@@ -24,10 +26,22 @@ const progressTitleStyle = {
   verticalAlign: 'middle'
 };
 
+const tap = (x) => { console.log(x); return x; }
 
+@connect((state, props) => {
+  // Could be articles as well, later
+  const tutorialContent = props.tutorialData.childData
+    .filter(c => c.kind === "Video")
+    .map(c => getVideoById(state, c.id))
+    .filter(x => !!x)
+    .map(c => ({...c, kindCode: "v", kind: "Video"}))
+
+  return {tutorialContent};
+})
 export class TutorialNavList {
   static propTypes = {
     tutorialData: PropTypes.object.isRequired,
+    tutorialContent: PropTypes.array.isRequired,
     domainSlug: PropTypes.string.isRequired,
     activePath: PropTypes.string
   }
@@ -36,7 +50,7 @@ export class TutorialNavList {
     const {tutorialData, activePath, domainSlug} = this.props;
 
     // NOTE: relativeUrl contains a leading slash
-    const url = `${tutorialData.relativeUrl}/${child.slug}`;
+    const url = `${tutorialData.relativeUrl}/${child.kindCode}/${child.slug}`;
 
     const isActive = (activePath === url);
 
@@ -46,16 +60,16 @@ export class TutorialNavList {
             isLast={index === children.length - 1}
             isFirst={index === 0}
             kind={child.kind} />
-        <span style={progressTitleStyle}>{child.title}</span>
+        <span style={progressTitleStyle}>{child.translatedTitle}</span>
       </Link>
     </li>;
   }
 
   render() {
-    const {tutorialData} = this.props;
+    const {tutorialContent} = this.props;
 
     return <ul>
-      {tutorialData.children.map(this.renderNavItem.bind(this))}
+      {tutorialContent.map(this.renderNavItem.bind(this))}
     </ul>;
   }
 };
@@ -143,7 +157,7 @@ class TutorialNav {
         <Link to={`${parentTopicData.relativeUrl}/${nextTutorialData.slug}`}
               style={tutorialNavNextStyle}>
           <div style={tutorialNavNextLabelStyle}>Next Section:</div>
-          {nextTutorialData.title}
+          {nextTutorialData.translatedTitle}
         </Link>}
     </div>;
   }

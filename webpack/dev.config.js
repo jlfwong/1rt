@@ -40,7 +40,7 @@ module.exports = {
   },
   plugins: [
     // hot reload
-    new webpack.HotModuleReplacementPlugin(),
+    // new webpack.HotModuleReplacementPlugin(),
     new webpack.WatchIgnorePlugin([/\.json$/]),
     new webpack.NoErrorsPlugin(),
     new webpack.DefinePlugin({

@@ -5,13 +5,14 @@ import TopicList from '../components/TopicList';
 import {getTopicBySlug, getTopicById} from '../reducers/topictree';
 
 export default
-@connect((state, props) => ({
-  parentTopicData: getTopicBySlug(state, props.params.subjectSlug),
-  topicData: getTopicBySlug(state, props.params.topicSlug),
-  subTopicData: getTopicBySlug(state, props.params.topicSlug).childData.map(
-    c => getTopicById(state, c.id)
-  ).filter(x => !!x)
-}))
+@connect((state, props) => {
+  const parentTopicData = getTopicBySlug(state, props.params.subjectSlug);
+  const topicData = getTopicBySlug(state, props.params.topicSlug);
+  const subTopicData = topicData.childData.map(c => getTopicById(state, c.id))
+                          .filter(x => !!x);
+
+  return {parentTopicData, topicData, subTopicData};
+})
 class TopicPage {
   static propTypes = {
     params: PropTypes.object.isRequired,
@@ -34,8 +35,7 @@ class TopicPage {
         description={topicData.translatedDescription}
         domainSlug={params.domainSlug} />
       <TopicList
-        topics={subTopicData}
-        relativeUrl={topicData.relativeUrl}
+        topicData={topicData}
         domainSlug={params.domainSlug} />
     </ul>;
   }

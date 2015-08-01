@@ -5,12 +5,12 @@ import TopicList from '../components/TopicList';
 import {getTopicBySlug, getTopicById} from '../reducers/topictree';
 
 export default
-@connect((state, props) => ({
-  topicData: getTopicBySlug(state, props.params.subjectSlug),
-  subTopicData: getTopicBySlug(state, props.params.subjectSlug).childData.map(
-    c => getTopicById(state, c.id)
-  ).filter(x => !!x)
-}))
+@connect((state, props) => {
+  const topicData = getTopicBySlug(state, props.params.subjectSlug);
+  const subTopicData = topicData.childData.map(c => getTopicById(state, c.id))
+                            .filter(x => !!x)
+  return {topicData, subTopicData}
+})
 class SubjectPage {
   static fetchData(store, nextParams) {
     return [`topic:${nextParams.subjectSlug}/*/*`];
