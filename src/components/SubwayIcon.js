@@ -32,10 +32,7 @@ const pipeStyleLast = {
   height: '50%'
 };
 
-const iconStyle = kind => ({
-  // TODO(jlfwong): Consider using a data URI here
-  backgroundImage: `url(https://www.kastatic.org/images/progress-icons/subway-sprites-${kind.toLowerCase()}-science.svg)`,
-  backgroundSize: '25px 75px',
+const iconStyle = {
   height: '25px',
   width: '25px',
   overflow: 'hidden',
@@ -46,7 +43,7 @@ const iconStyle = kind => ({
   left: '8px',
   marginTop: '-12px',
   zIndex: 20
-})
+};
 
 export default
 class SubwayIcon {
@@ -69,7 +66,7 @@ class SubwayIcon {
     return <div>
       <div style={subwayIconStyle}>
         {!(isFirst && isLast) && <div style={thisPipeStyle}></div>}
-        <div style={iconStyle(kind)}></div>
+        <svg style={iconStyle} viewBox="0 0 100 100" width="100" height="100"><circle fill="#fff" cx="50" cy="50" r="45"/><path fill="#ccc" d="M0 50c0-27.6 22.4-50 50-50s50 22.4 50 50-22.4 50-50 50-50-22.4-50-50zm10.7 0c0 19.5 19.8 39.3 39.3 39.3s39.3-19.8 39.3-39.3-19.8-39.3-39.3-39.3-39.3 19.8-39.3 39.3z"/><path fill="#ddd" d="M37.8 68.67c-.81.45-1.44 0-1.44-.9v-37.53c0-.9.63-1.26 1.44-.9l33.84 18.81c.72.45.72 1.17 0 1.62l-33.84 18.9z"/></svg>
       </div>
     </div>;
   }
