@@ -18,7 +18,8 @@ const descriptionBoxStyle = {
 const frameStyle = {
   width: '100%',
   height: '192px',
-  marginBottom: '8px'
+  marginBottom: '8px',
+  backgroundColor: '#000'
 };
 const frameOverlayStyle = {
   ...frameStyle,
@@ -47,15 +48,24 @@ class VideoContent extends Component {
     this.state = { showOverlay: true };
   }
 
-  onFrameLoad() {
+  componentDidMount() {
+    const videoNode = React.findDOMNode(this.refs.video);
+    if (videoNode) {
+      videoNode.addEventListener('play', this.hideOverlay.bind(this), false);
+    }
+  }
+
+  hideOverlay() {
     this.setState({ showOverlay: false });
   }
 
   render() {
     const {videoData} = this.props;
+    const useYouTubePlayer = false;
 
     const youtubeId = videoData.youtubeId;
     const youtubeEmbedUrl = `https://www.youtube.com/embed/${youtubeId}`;
+    const directMp4Url = `http://fastly.kastatic.org/KA-youtube-converted/${youtubeId}.mp4/${youtubeId}.mp4 `;
 
     const overlayStyle = {
       ...frameOverlayStyle,
@@ -63,9 +73,18 @@ class VideoContent extends Component {
     };
     const overlay = this.state.showOverlay ? <div style={overlayStyle} /> : "";
 
+    let player;
+    if (useYouTubePlayer) {
+      player = <iframe type="text/html" src={youtubeEmbedUrl} style={frameStyle} onLoad={this.hideOverlay.bind(this)} />;
+    } else {
+      player = <video ref="video" style={frameStyle} controls>
+          <source src={directMp4Url} type="video/mp4" />
+        </video>;
+    }
+
     return <div>
       {overlay}
-      <iframe type="text/html" src={youtubeEmbedUrl} style={frameStyle} onLoad={this.onFrameLoad.bind(this)} />
+      {player}
       <div style={descriptionBoxStyle}>
         <p style={videoTitleStyle}>{videoData.title}</p>
         <p>{videoData.description}</p>
