@@ -19,6 +19,13 @@ const TOPIC_TREE_URL = `https://www.khanacademy.org/api/v2/topics/topictree?proj
 
 let _DATA = null;
 
+const debug = (fn) => (...args) => {
+  console.log("Arg:", args);
+  const ret = fn(...args);
+  console.log("Ret:", ret);
+  return ret;
+}
+
 const indexBy = (list, key) => {
   return list.reduce((ret, cur) => {
     ret[cur[key]] = cur;
@@ -35,13 +42,6 @@ const uniqBy = (list, key) => (
     ret: ret.concat(seen[cur[key]] ? [] : [cur])
   }), {seen: {}, ret: []}).ret
 )
-
-const debug = (fn) => (...args) => {
-  console.log("Arg:", ...args);
-  const ret = fn(...args);
-  console.log("Ret:", ret);
-  return ret;
-}
 
 const TopicTree = {
   // TODO(jlfwong): Make this actually download data from KA instead of just
@@ -62,7 +62,7 @@ const TopicTree = {
     }
   },
 
-  mergeData(a, b) {
+  mergeData: (a, b) => {
     return {
       topics: uniqBy(a.topics.concat(b.topics), "id"),
       videos: uniqBy(a.videos.concat(b.videos), "id")
@@ -96,10 +96,13 @@ const TopicTree = {
           }, []);
 
           return TopicTree.mergeData(parentData, {
+            // TODO(jlfwong): Wtf - these filter() calls should not be necessary
             topics: allChildren.filter(c => c.kind === "Topic")
-                                  .map(c => topicsById[c.id]),
+                                  .map(c => topicsById[c.id])
+                                  .filter(x => !!x),
             videos: allChildren.filter(c => c.kind === "Video")
-                                  .map(c => videosById[c.id])
+                                  .map(c => videosById[c.id] || c.id)
+                                  .filter(x => !!x),
           })
         }
       }[type](arg)
