@@ -7,6 +7,8 @@ if (__CLIENT__) {
   superagentJsonp(superagent);
 }
 
+let _FULL_RAW_TOPICTREE_DATA = null;
+
 /*
  * This silly underscore is here to avoid a mysterious "ReferenceError: ApiClient is not defined" error.
  * See Issue #14. https://github.com/erikras/react-redux-universal-hot-example/issues/14
@@ -45,8 +47,55 @@ class ApiClient_ {
       });
   }
 
-
+  loadPaths(paths) {
+    return new Promise((resolve, reject) => {
+      if (__SERVER__) {
+        resolve(TopicTree.getDataForPaths(
+                                paths,
+                                _FULL_RAW_TOPICTREE_DATA));
+      } else {
+        superagent.get(`/api/${paths.join(",")}`).end((err, res) => {
+          if (err) {
+            reject((res && res.body) || err);
+          } else {
+            resolve(res.body);
+          }
+        })
+      }
+    });
+  }
 }
+
 const ApiClient = ApiClient_;
+
+if (__SERVER__) {
+  // TODO(jlfwong): Make this actually download data from KA instead of just
+  // pulling from disk.
+
+  /*
+  const PROJECTION = JSON.stringify({
+      topics:[{
+          id: 1,
+          slug: 1,
+          translatedTitle: 1,
+          translatedDescription: 1,
+          childData: 1
+      }],
+      videos: [{
+          id: 1,
+          slug: 1,
+          translatedTitle: 1,
+          translatedDescription: 1,
+          translatedYoutubeId: 1
+      }]
+  });
+
+  const TOPIC_TREE_URL = `https://www.khanacademy.org/api/v2/topics/topictree?projection=${PROJECTION}`;
+  */
+
+  const raw = JSON.parse(require("fs").readFileSync(`${__dirname}/../static/topictree.json`));
+  _FULL_RAW_TOPICTREE_DATA = TopicTree.indexData(raw);
+}
+
 
 export default ApiClient;

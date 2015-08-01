@@ -34,7 +34,7 @@ export default (
           <Route path=":topicSlug" {...index(TopicPage)}>
             <Route path=":tutorialSlug" {...index(TutorialPage)}>
               <Route component={ContentPage}>
-                <Route path="v/:videoReadableId" component={VideoContent} />
+                <Route path="v/:videoSlug" component={VideoContent} />
               </Route>
             </Route>
           </Route>

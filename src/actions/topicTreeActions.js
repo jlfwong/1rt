@@ -20,7 +20,7 @@ function loadPaths(paths) {
 
 import {hasDataForPath} from '../reducers/topictree';
 
-export maybeLoadPath(store, path) {
+export const maybeLoadPath = (store, path) => {
   // TODO(jlfwong): Figure out if we *will* have the data for it to avoid
   // duplicate concurrent requests.
   if (!hasDataForPath(store.getState(), path)) {

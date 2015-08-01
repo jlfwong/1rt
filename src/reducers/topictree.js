@@ -6,11 +6,12 @@ import {
 
 import TopicTree from '../TopicTree';
 
-const initialState = {};
+// TODO(jlfwong): Move this initial state into TopicTree
+const initialState = {videos: [], topics: []};
 
 export const STORE_KEY = "__topictree__";
 
-export default function topictree(state = initialState, action = {}) {
+export const reducer = (state = initialState, action = {}) => {
   switch (action.type) {
     case TOPICTREE_DATA_SUCCESS:
       return TopicTree.mergeRawData(state, action.result)

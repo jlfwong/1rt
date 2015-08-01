@@ -1,26 +1,5 @@
 import './object-assign-polyfill';
 
-const PROJECTION = JSON.stringify({
-    topics:[{
-        id: 1,
-        slug: 1,
-        translatedTitle: 1,
-        translatedDescription: 1,
-        childData: 1
-    }],
-    videos: [{
-        id: 1,
-        slug: 1,
-        translatedTitle: 1,
-        translatedDescription: 1,
-        translatedYoutubeId: 1
-    }]
-});
-
-const TOPIC_TREE_URL = `https://www.khanacademy.org/api/v2/topics/topictree?projection=${PROJECTION}`;
-
-let _DATA = null;
-
 const debug = (fn) => (...args) => {
   console.log("Arg:", args);
   const ret = fn(...args);
@@ -52,14 +31,9 @@ const uniqBy = (list, key) => (
 //            videosById: {id: video, ...},
 //            topicsBySlug: {slug: topic, ...},
 //            topicsById: {id: topic, ...}}
-
 const TopicTree = {
-  // TODO(jlfwong): Make this actually download data from KA instead of just
-  // pulling from disk.
   refreshData() {
     if (__SERVER__) {
-      const raw = JSON.parse(require("fs").readFileSync(`${__dirname}/../static/topictree.json`));
-      _DATA = TopicTree.indexData(raw);
     }
   },
 
@@ -104,9 +78,6 @@ const TopicTree = {
   },
 
   getDataForPath(path, indexedData) {
-    if (!indexedData) {
-      indexedData = _DATA;
-    }
     const {videosBySlug, videosById, topicsBySlug, topicsById} = indexedData;
 
     const _get = segments => {

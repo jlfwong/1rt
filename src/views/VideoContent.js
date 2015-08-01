@@ -1,7 +1,8 @@
 import React, {Component, PropTypes} from 'react';
 import {connect} from 'react-redux';
 import {createTransitionHook} from '../universalRouter';
-import {maybeLoadVideo} from '../actions/videoActions';
+import {maybeLoadPath} from '../actions/topicTreeActions';
+import {getVideoBySlug} from '../reducers/topictree';
 import {Link} from 'react-router';
 
 const videoTitleStyle = {
@@ -56,7 +57,7 @@ class YouTubePlayer extends Component {
 };
 
 @connect((state, props) => ({
-  videoData: state.video[props.params.videoReadableId]
+  videoData: getVideoBySlug(state, props.params.videoSlug)
 }))
 export default
 class VideoContent {
@@ -66,12 +67,12 @@ class VideoContent {
   }
 
   static fetchData(store, nextParams) {
-    return maybeLoadVideo(store, nextParams.videoReadableId);
+    return maybeLoadPath(store, `video:${nextParams.videoSlug}`);
   }
 
   render() {
     const {videoData} = this.props;
-    const youtubeId = videoData.youtubeId;
+    const youtubeId = videoData.translatedYoutubeId;
     const useYouTubePlayer = false;
 
     let player;
@@ -86,8 +87,8 @@ class VideoContent {
     return <div>
       {player}
       <div style={descriptionBoxStyle}>
-        <p style={videoTitleStyle}>{videoData.title}</p>
-        <p>{videoData.description}</p>
+        <p style={videoTitleStyle}>{videoData.translatedTitle}</p>
+        <p>{videoData.translatedDescription}</p>
       </div>
     </div>
   }
