@@ -45,6 +45,14 @@ const uniqBy = (list, key) => (
   }), {seen: {}, ret: []}).ret
 )
 
+// There are 2 data formats used by TopicTree:
+//
+//  raw: {topics: [...], videos: [...]}
+//  indexed: {videosBySlug: {slug: video, ...},
+//            videosById: {id: video, ...},
+//            topicsBySlug: {slug: topic, ...},
+//            topicsById: {id: topic, ...}}
+
 const TopicTree = {
   // TODO(jlfwong): Make this actually download data from KA instead of just
   // pulling from disk.
@@ -64,13 +72,6 @@ const TopicTree = {
     }
   },
 
-  mergeData: (a, b) => {
-    return {
-      topics: uniqBy((a.topics || []).concat((b.topics || [])), "id"),
-      videos: uniqBy((a.videos || []).concat((b.videos || [])), "id")
-    }
-  },
-
   mergeIndices: (a, b) => {
     return Object.keys(b).reduce((ret, key) => ({
       ...ret,
@@ -78,11 +79,35 @@ const TopicTree = {
     }), {});
   },
 
-  getDataForPath(path, allData) {
-    if (!allData) {
-      allData = _DATA;
+  mergeRawData: (a, b) => {
+    return {
+      topics: uniqBy((a.topics || []).concat((b.topics || [])), "id"),
+      videos: uniqBy((a.videos || []).concat((b.videos || [])), "id")
     }
-    const {videosBySlug, videosById, topicsBySlug, topicsById} = allData;
+  },
+
+  // TODO(jlfwong): Optimize all these methods with either findBy or caching
+  getTopicBySlug(rawData, slug) {
+    return indexBy(rawData.topics, "slug")[slug];
+  },
+
+  getTopicById(rawData, id) {
+    return indexBy(rawData.topics, "id")[id];
+  },
+
+  getVideoBySlug(rawData, slug) {
+    return indexBy(rawData.videos, "slug")[slug];
+  },
+
+  getVideoById(rawData, id) {
+    return indexBy(rawData.videos, "id")[id];
+  },
+
+  getDataForPath(path, indexedData) {
+    if (!indexedData) {
+      indexedData = _DATA;
+    }
+    const {videosBySlug, videosById, topicsBySlug, topicsById} = indexedData;
 
     const _get = segments => {
       const [type, arg] = segments[segments.length - 1].split(":");
@@ -104,7 +129,7 @@ const TopicTree = {
             return ret.concat(topic.childData);
           }, []);
 
-          return TopicTree.mergeData(parentData, {
+          return TopicTree.mergeRawData(parentData, {
             // TODO(jlfwong): Wtf - these filter() calls should not be necessary
             topics: allChildren.filter(c => c.kind === "Topic")
                                   .map(c => topicsById[c.id])
@@ -120,14 +145,14 @@ const TopicTree = {
     return _get(path.split("/"));
   },
 
-  getDataForPaths(paths, allData) {
+  getDataForPaths(paths, indexedData) {
     return paths.reduce((ret, path) => (
-      TopicTree.mergeData(ret, TopicTree.getDataForPath(path, allData))
+      TopicTree.mergeRawData(ret, TopicTree.getDataForPath(path, indexedData))
     ), {topics: [], videos: []})
   },
 
-  hasDataForPath(path, allData) {
-    const {videosBySlug, videosById, topicsBySlug, topicsById} = allData;
+  hasDataForPath(path, indexedData) {
+    const {videosBySlug, videosById, topicsBySlug, topicsById} = indexedData;
 
     const _has = segments => {
       const [type, arg] = segments[segments.length - 1].split(":");
@@ -144,7 +169,7 @@ const TopicTree = {
           }
 
           const parentData = TopicTree.getDataForPath(parentSegments.join("/"),
-                                                      allData);
+                                                      indexedData);
 
           const allChildren = parentData.topics.reduce((ret, topic) => {
             return ret.concat(topic.childData);
