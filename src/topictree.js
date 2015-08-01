@@ -1,3 +1,5 @@
+import './object-assign-polyfill';
+
 const PROJECTION = JSON.stringify({
     topics:[{
         id: 1,
@@ -49,11 +51,11 @@ const TopicTree = {
   refreshData() {
     if (__SERVER__) {
       const raw = JSON.parse(require("fs").readFileSync(`${__dirname}/../static/topictree.json`));
-      _DATA = TopicTree.transformData(raw);
+      _DATA = TopicTree.indexData(raw);
     }
   },
 
-  transformData(raw) {
+  indexData(raw) {
     return {
       videosBySlug: indexBy(raw.videos, "slug"),
       videosById: indexBy(raw.videos, "id"),
@@ -64,9 +66,16 @@ const TopicTree = {
 
   mergeData: (a, b) => {
     return {
-      topics: uniqBy(a.topics.concat(b.topics), "id"),
-      videos: uniqBy(a.videos.concat(b.videos), "id")
+      topics: uniqBy((a.topics || []).concat((b.topics || [])), "id"),
+      videos: uniqBy((a.videos || []).concat((b.videos || [])), "id")
     }
+  },
+
+  mergeIndices: (a, b) => {
+    return Object.keys(b).reduce((ret, key) => ({
+      ...ret,
+      [key]: Object.assign({}, a[key] || {}, b[key])
+    }), {});
   },
 
   getDataForPath(path, allData) {

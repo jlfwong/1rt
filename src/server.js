@@ -57,7 +57,7 @@ const epilogue = `</body></html>`;
 TopicTree.refreshData();
 
 app.use('/api', (req, res) => {
-  res.send(TopicTree.getDataForPath(req.path));
+  res.send(TopicTree.getDataForPaths(req.path.split(",")));
 });
 
 app.use((req, res) => {
