@@ -43,11 +43,6 @@ const debug = (fn) => (...args) => {
   return ret;
 }
 
-const uniqDataMergeByIds = (a, b) => ({
-  topics: uniqBy(a.topics.concat(b.topics), "id"),
-  videos: uniqBy(a.videos.concat(b.videos), "id")
-})
-
 const TopicTree = {
   // TODO(jlfwong): Make this actually download data from KA instead of just
   // pulling from disk.
@@ -64,6 +59,13 @@ const TopicTree = {
       videosById: indexBy(raw.videos, "id"),
       topicsBySlug: indexBy(raw.topics, "slug"),
       topicsById: indexBy(raw.topics, "id")
+    }
+  },
+
+  mergeData(a, b) {
+    return {
+      topics: uniqBy(a.topics.concat(b.topics), "id"),
+      videos: uniqBy(a.videos.concat(b.videos), "id")
     }
   },
 
@@ -93,7 +95,7 @@ const TopicTree = {
             return ret.concat(topic.childData);
           }, []);
 
-          return uniqDataMergeByIds(parentData, {
+          return TopicTree.mergeData(parentData, {
             topics: allChildren.filter(c => c.kind === "Topic")
                                   .map(c => topicsById[c.id]),
             videos: allChildren.filter(c => c.kind === "Video")
@@ -108,8 +110,43 @@ const TopicTree = {
 
   getDataForPaths(paths, allData) {
     return paths.reduce((ret, path) => (
-      uniqDataMergeByIds(ret, TopicTree.getDataForPath(path, allData))
+      TopicTree.mergeData(ret, TopicTree.getDataForPath(path, allData))
     ), {topics: [], videos: []})
+  },
+
+  hasDataForPath(path, allData) {
+    const {videosBySlug, videosById, topicsBySlug, topicsById} = allData;
+
+    const _has = segments => {
+      const [type, arg] = segments[segments.length - 1].split(":");
+
+      return {
+        video: (slug) => !!videosBySlug[slug],
+        topic: (slug) => !!topicsBySlug[slug],
+        '*': () => {
+          const parentSegments = segments.slice(0, segments.length - 1);
+          const hasParentData = _has(parentSegments);
+
+          if (!hasParentData) {
+            return false;
+          }
+
+          const parentData = TopicTree.getDataForPath(parentSegments.join("/"),
+                                                      allData);
+
+          const allChildren = parentData.topics.reduce((ret, topic) => {
+            return ret.concat(topic.childData);
+          }, []);
+
+          // Do we have the data for all the children?
+          return allChildren.every(c =>
+            (c.kind === "Topic" && !!topicsById[c.id]) ||
+            (c.kind === "Video" && !!videosById[c.id]));
+        }
+      }[type](arg)
+    }
+
+    return _has(path.split("/"));
   }
 }
 

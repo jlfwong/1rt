@@ -1,5 +1,5 @@
 import {assert} from 'chai';
-import TopicTree from './topictree';
+import TopicTree from './TopicTree';
 
 const testData = {
   videos: [{
@@ -95,5 +95,77 @@ suite('TopicTree', () => {
     test('videos', () => {
       assertDataForPaths(["video:a", "video:b"], {videos: ["x1", "x2"]})
     })
+
+    test('topics', () => {
+      assertDataForPaths(["topic:c", "topic:d"], {topics: ["x3", "x4"]})
+    })
   })
+
+  suite('hasDataForPath', () => {
+    const allTransformed = TopicTree.transformData(testData);
+
+    const assertHasDataForPath = (has, path, {topics, videos}) => {
+      const transformedData = TopicTree.transformData({
+        topics: topics.map(x => allTransformed.topicsById[x]),
+        videos: videos.map(x => allTransformed.videosById[x])
+      });
+      assert.equal(has, TopicTree.hasDataForPath(path, transformedData));
+    }
+
+    test('videos', () => {
+      assertHasDataForPath(false, "video:a", {videos: [], topics: []})
+      assertHasDataForPath(false, "video:a", {
+        videos: ["x2"],
+        topics: []
+      })
+      assertHasDataForPath(true, "video:a", {
+        videos: ["x1"],
+        topics: []
+      });
+      assertHasDataForPath(true, "video:a", {
+        videos: ["x1", "x2"],
+        topics: []
+      });
+    });
+
+    test('topics', () => {
+      assertHasDataForPath(false, "topic:c", {videos: [], topics: []})
+      assertHasDataForPath(true, "topic:c", {
+        videos: [],
+        topics: ["x3"]
+      });
+    });
+
+    test('topic wildcard', () => {
+      assertHasDataForPath(false, "topic:c/*", {videos: [], topics: []})
+      assertHasDataForPath(false, "topic:c/*", {
+        videos: [],
+        topics: ["x3"]
+      });
+      assertHasDataForPath(true, "topic:c/*", {
+        videos: [],
+        topics: ["x3", "x4", "x5"]
+      });
+    });
+
+    test('topic wildcard', () => {
+      assertHasDataForPath(false, "topic:d/*", {videos: [], topics: []})
+      assertHasDataForPath(true, "topic:d/*", {
+        videos: ["x1", "x2"],
+        topics: ["x4"]
+      });
+    });
+
+    test('topic double wildcard', () => {
+      assertHasDataForPath(false, "topic:c/*/*", {videos: [], topics: []})
+      assertHasDataForPath(false, "topic:c/*/*", {
+        videos: [],
+        topics: ["x3"]
+      });
+      assertHasDataForPath(true, "topic:c/*/*", {
+        videos: ["x1", "x2"],
+        topics: ["x3", "x4", "x5"]
+      });
+    });
+  });
 });
