@@ -12,4 +12,5 @@ RUN npm run build
 
 # Run production build
 EXPOSE 8080
+EXPOSE 8443
 CMD npm run start

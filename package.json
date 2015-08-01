@@ -24,7 +24,7 @@
   ],
   "main": "babel.server.js",
   "scripts": {
-    "start": "NODE_PATH=\"./src\" NODE_ENV=\"production\" PORT=\"8080\" node ./babel.server",
+    "start": "NODE_PATH=\"./src\" NODE_ENV=\"production\" PORT=\"8080\" HTTPS_PORT=\"8443\" node ./babel.server",
     "build": "node ./node_modules/webpack/bin/webpack.js --verbose --colors --display-error-details --config webpack/prod.config.js",
     "lint": "node ./node_modules/eslint/bin/eslint.js -c .eslintrc src",
     "start-dev": "NODE_PATH=\"./src\" NODE_ENV=\"development\" node ./babel.server",
@@ -39,6 +39,7 @@
     "express": "^4.13.0",
     "express-session": "^1.11.3",
     "file-loader": "^0.8.4",
+    "http2": "3.2.0",
     "http-proxy": "^1.11.1",
     "piping": "0.1.8",
     "pretty-error": "^1.1.2",

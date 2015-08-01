@@ -21,7 +21,7 @@ Run `make deploy` or read on for the details of what it does.
           --image container-vm \
           --zone us-central1-a \
           --machine-type f1-micro \
-          --tags http-server \
+          --tags http-server,https-server \
           --address hackathon-1rt \
           --metadata-from-file google-container-manifest=containers.yaml
 

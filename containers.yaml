@@ -13,5 +13,8 @@ spec:
         - containerPort: 8080
           hostPort: 80
           protocol: TCP
+        - containerPort: 8443
+          hostPort: 443
+          protocol: TCP
   restartPolicy: Always
   dnsPolicy: Default

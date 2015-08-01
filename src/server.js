@@ -13,6 +13,8 @@ import universalRouter from './universalRouter';
 import PrettyError from 'pretty-error';
 import serialize from 'serialize-javascript';
 import Header from './components/Header';
+import http from 'http';
+import http2 from 'http2';
 
 const pretty = new PrettyError();
 const app = new Express();
@@ -89,9 +91,29 @@ app.use((req, res) => {
 });
 
 if (config.port) {
-  app.listen(config.port, (err) => {
+  http.createServer(app).listen(config.port, (err) => {
     if (err) {
       console.error(err);
+    } else {
+      console.log(`Express server listening on port ${config.port}`);
+    }
+  });
+
+  // These self-signed certs were created following the process at
+  // http://blog.matoski.com/articles/node-express-generate-ssl/
+  const options = {
+    key: fs.readFileSync('./ssl/server.key'),
+    cert: fs.readFileSync('./ssl/server.crt'),
+    ca: fs.readFileSync('./ssl/ca.crt'),
+    requestCert: true,
+    rejectUnauthorized: false
+  };
+
+  http2.createServer(options, app).listen(config.httpsPort, (err) => {
+    if (err) {
+      console.error(err);
+    } else {
+      console.log(`Secure Express server listening on port ${config.httpsPort}`);
     }
   });
 } else {
