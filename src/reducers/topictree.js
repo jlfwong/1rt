@@ -21,18 +21,17 @@ export default function topictree(state = initialState, action = {}) {
 
 const _get = (totalState) => (totalState[STORE_KEY] || initialState);
 
-export const getTopicBySlug(totalState, topicSlug) => (
+export const getTopicBySlug = (totalState, topicSlug) =>
   TopicTree.getTopicBySlug(_get(totalState), topicSlug);
-)
 
-export const getTopicById(totalState, topicSlug) => (
+export const getTopicById = (totalState, topicSlug) =>
   TopicTree.getTopicById(_get(totalState), topicSlug);
-)
 
-export const getVideoBySlug(totalState, topicSlug) => (
+export const getVideoBySlug = (totalState, topicSlug) =>
   TopicTree.getVideoBySlug(_get(totalState), topicSlug);
-)
 
-export const getVideoById(totalState, topicSlug) => (
+export const getVideoById = (totalState, topicSlug) =>
   TopicTree.getVideoById(_get(totalState), topicSlug);
-)
+
+export const hasDataForPath = (totalState, path) =>
+  TopicTree.hasDataForPath(path, TopicTree.indexData(_get(totalState)));

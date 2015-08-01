@@ -4,7 +4,7 @@ import topictree from './topictree';
 
 const reducerMap = {
   video: video,
-  topic: topict,
+  topic: topic,
   [topictree.STORE_KEY]: topictree
 }
 
