@@ -62,6 +62,7 @@ class VideoContent extends Component {
   render() {
     const {videoData} = this.props;
     const useYouTubePlayer = false;
+    const useOverlay = useYouTubePlayer;  // useful in hiding YT's loading time
 
     const youtubeId = videoData.youtubeId;
     const youtubeEmbedUrl = `https://www.youtube.com/embed/${youtubeId}`;
@@ -83,7 +84,7 @@ class VideoContent extends Component {
     }
 
     return <div>
-      {overlay}
+      {useOverlay && overlay}
       {player}
       <div style={descriptionBoxStyle}>
         <p style={videoTitleStyle}>{videoData.title}</p>
