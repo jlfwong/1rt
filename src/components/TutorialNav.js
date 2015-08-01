@@ -31,10 +31,10 @@ const tap = (x) => { console.log(x); return x; }
 @connect((state, props) => {
   // Could be articles as well, later
   const tutorialContent = props.tutorialData.childData
-    .filter(c => c.kind === "Video")
-    .map(c => getVideoById(state, c.id))
-    .filter(x => !!x)
-    .map(c => ({...c, kindCode: "v", kind: "Video"}))
+                            .filter(c => c.kind === "Video")
+                            .map(c => getVideoById(state, c.id))
+                            .filter(x => !!x)
+                            .map(c => ({...c, kindCode: "v", kind: "Video"}))
 
   return {tutorialContent};
 })
@@ -44,6 +44,10 @@ export class TutorialNavList {
     tutorialContent: PropTypes.array.isRequired,
     domainSlug: PropTypes.string.isRequired,
     activePath: PropTypes.string
+  }
+
+  static fetchData(store, tutorialSlug) {
+    return [`topic:${tutorialSlug}/*`]
   }
 
   renderNavItem(child, index, children) {
@@ -115,39 +119,59 @@ const topicTitleStyle = (domainSlug) => ({
 })
 
 export default
+@connect((state, props) => {
+  const tutorialData = getTopicBySlug(state, props.tutorialSlug);
+  const parentTopicData = getTopicBySlug(state, props.parentTopicSlug);
+  const tutorialDatasInParentTopic = parentTopicData.childData
+                                        .map(c => getTopicById(state, c.id))
+                                        .filter(x => !!x);
+
+  return {tutorialData, parentTopicData, tutorialDatasInParentTopic};
+})
 class TutorialNav {
   static propTypes = {
-    parentTopicData: PropTypes.object.isRequired,
     tutorialData: PropTypes.object.isRequired,
     activePath: PropTypes.string.isRequired,
+    parentTopicSlug: PropTypes.string.isRequired,
+
+    tutorialSlug: PropTypes.object.isRequired,
     domainSlug: PropTypes.string.isRequired
   }
 
+  static fetchData(store, parentTopicSlug, tutorialSlug) {
+    return [
+      `topic:${parentTopicSlug}/*`,
+      `topic:${tutorialSlug}/*`
+    ]
+  }
+
   render() {
-    const {parentTopicData, domainSlug, tutorialData} = this.props;
+    const {
+      parentTopicData,
+      domainSlug,
+      tutorialData,
+      tutorialDatasInParentTopic
+    } = this.props;
 
     let tutorialIndexInTopic = null;
-    // TODO(jlfwong): Fix this
-    /*
-    parentTopicData.childData.forEach((child, index) => {
+    tutorialDatasInParentTopic.forEach((child, index) => {
       if (child.id === tutorialData.id) {
         tutorialIndexInTopic = index;
       }
     });
-    */
 
     const nextTutorialData = (tutorialIndexInTopic !== null &&
-                              parentTopicData.childData[tutorialIndexInTopic + 1]);
+                              tutorialDatasInParentTopic[tutorialIndexInTopic + 1]);
 
     return <div style={containerStyle}>
       <div style={newTopicBreadcrumbStyle}>
         <Link
             to={parentTopicData.relativeUrl}
             style={topicTitleStyle(domainSlug)}>
-          {parentTopicData.title}
+          {parentTopicData.translatedTitle}
         </Link>
         <h1 style={tutorialTitleStyle}>
-          {tutorialData.title}
+          {tutorialData.translatedTitle}
         </h1>
       </div>
       <div style={tutorialNavSectionStyle}>

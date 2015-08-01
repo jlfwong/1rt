@@ -8,13 +8,12 @@ import {getTopicBySlug, getTopicById} from '../reducers/topictree';
 export default
 @connect((state, props) => {
   const topicData = getTopicBySlug(state, props.params.domainSlug);
-  const subTopicData = topicData.childData.map(c => getTopicById(state, c.id))
-                            .filter(x => !!x)
-  return {topicData, subTopicData}
+  return {topicData}
 })
 class DomainPage {
   static fetchData(store, nextParams) {
-    return [`topic:${nextParams.domainSlug}/*`];
+    return [`topic:${nextParams.domainSlug}/*`]
+              .concat(TopicList.DecoratedComponent.fetchData(store, nextParams.domainSlug))
   }
 
   render() {
@@ -25,7 +24,7 @@ class DomainPage {
         description={topicData.translatedDescription}
         domainSlug={params.domainSlug} />
       <TopicList
-        topics={subTopicData}
+        topicData={topicData}
         relativeUrl={topicData.relativeUrl}
         domainSlug={params.domainSlug} />
     </div>;

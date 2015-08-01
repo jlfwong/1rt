@@ -36,12 +36,15 @@ const topicTitleStyle = (domainSlug) => ({
 export default
 @connect((state, props) => {
   const {topicData} = props;
-
   const subTopicData = topicData.childData.map(c => getTopicById(state, c.id))
                             .filter(x => !!x)
   return {subTopicData}
 })
 class TopicList {
+  static fetchData(store, topicSlug) {
+    return [`topic:${topicSlug}/*`]
+  }
+
   renderTopic(relativeUrl, child) {
     const {domainSlug} = this.props;
 
