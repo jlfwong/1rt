@@ -1,47 +1,31 @@
 import React, {Component, PropTypes} from 'react';
-import {topicWasRequested} from '../reducers/topic';
 import {connect} from 'react-redux';
-import {maybeLoadTopic} from '../actions/topicActions';
 import {Link} from 'react-router';
 import SubjectHeader from '../components/SubjectHeader';
 import TopicList from '../components/TopicList';
-import {getTopic} from '../reducers/topic';
+import {getTopicBySlug, getTopicById} from '../reducers/topictree';
 
 export default
 @connect((state, props) => ({
-  topicData: getTopic(state, props.params.domainSlug)
+  topicData: getTopicBySlug(state, props.params.domainSlug),
+  subTopicData: getTopicBySlug(state, props.params.domainSlug).childData.map(
+    c => getTopicById(state, c.id)
+  ).filter(x => !!x)
 }))
 class DomainPage {
-  static propTypes = {
-    params: PropTypes.object.isRequired,
-    topicData: PropTypes.object.isRequired
-  }
-
   static fetchData(store, nextParams) {
-    return maybeLoadTopic(store, nextParams.domainSlug);
-  }
-
-  renderSubject(relativeUrl, child) {
-    var {params} = this.props;
-
-    var url = `${relativeUrl}/${child.nodeSlug}`;
-
-    return <li>
-      <Link to={url}>
-        {child.title}
-      </Link>
-    </li>;
+    return [`topic:${nextParams.domainSlug}/*`];
   }
 
   render() {
-    const {topicData, params} = this.props;
+    const {topicData, params, subTopicData} = this.props;
     return <div>
       <SubjectHeader
-        title={topicData.title}
-        description={topicData.description}
+        title={topicData.translatedTitle}
+        description={topicData.translatedDescription}
         domainSlug={params.domainSlug} />
       <TopicList
-        topics={topicData.children}
+        topics={subTopicData}
         relativeUrl={topicData.relativeUrl}
         domainSlug={params.domainSlug} />
     </div>;

@@ -2,6 +2,7 @@ import React from 'react';
 import Router from 'react-router';
 import routes from './views/routes';
 import { Provider } from 'react-redux';
+import {maybeLoadPath} from './actions/topicTreeActions';
 
 const getFetchData = (component) => {
   return component.fetchData || (component.DecoratedComponent && component.DecoratedComponent.fetchData);
@@ -14,6 +15,8 @@ export function createTransitionHook(store) {
         .map(route => getFetchData(route.component))
         .filter(x => !!x)
         .map(fetchData => fetchData(store, nextState.params))
+        .reduce((ret, cur) => ret.concat(cur))
+        .map(path => maybeLoadPath(store, path))
     ).then(() => {
       callback(); // can't just pass callback to then() because callback assumes first param is error
     }, (error) => {

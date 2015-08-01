@@ -1,33 +1,30 @@
 import React, {Component, PropTypes} from 'react';
 import {connect} from 'react-redux';
-import {maybeLoadTopic} from '../actions/topicActions';
 import SubjectHeader from '../components/SubjectHeader';
 import TopicList from '../components/TopicList';
-import {topicWasRequested, getTopic} from '../reducers/topic';
+import {getTopicBySlug, getTopicById} from '../reducers/topictree';
 
 export default
 @connect((state, props) => ({
-  topicData: getTopic(state, props.params.subjectSlug)
+  topicData: getTopicBySlug(state, props.params.subjectSlug),
+  subTopicData: getTopicBySlug(state, props.params.subjectSlug).childData.map(
+    c => getTopicById(state, c.id)
+  ).filter(x => !!x)
 }))
 class SubjectPage {
-  static propTypes = {
-    params: PropTypes.object.isRequired,
-    topicData: PropTypes.object.isRequired
-  }
-
   static fetchData(store, nextParams) {
-    return maybeLoadTopic(store, [nextParams.subjectSlug]);
+    return [`topic:${nextParams.subjectSlug}/*/*`];
   }
 
   render() {
-    const {topicData, params} = this.props;
+    const {topicData, params, subTopicData} = this.props;
     return <div>
       <SubjectHeader
-        title={topicData.title}
-        description={topicData.description}
+        title={topicData.translatedTitle}
+        description={topicData.translatedDescription}
         domainSlug={params.domainSlug} />
       <TopicList
-        topics={topicData.children}
+        topics={subTopicData}
         relativeUrl={topicData.relativeUrl}
         domainSlug={params.domainSlug} />
     </div>;

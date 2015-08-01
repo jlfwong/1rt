@@ -1,7 +1,6 @@
 import React, {Component, PropTypes} from 'react';
 import {connect} from 'react-redux';
 import {createTransitionHook} from '../universalRouter';
-import {maybeLoadPath} from '../actions/topicTreeActions';
 import {getVideoBySlug} from '../reducers/topictree';
 import {Link} from 'react-router';
 
@@ -67,7 +66,7 @@ class VideoContent {
   }
 
   static fetchData(store, nextParams) {
-    return maybeLoadPath(store, `video:${nextParams.videoSlug}`);
+    return [`video:${nextParams.videoSlug}`]
   }
 
   render() {

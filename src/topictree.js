@@ -32,11 +32,6 @@ const uniqBy = (list, key) => (
 //            topicsBySlug: {slug: topic, ...},
 //            topicsById: {id: topic, ...}}
 const TopicTree = {
-  refreshData() {
-    if (__SERVER__) {
-    }
-  },
-
   indexData(raw) {
     return {
       videosBySlug: indexBy(raw.videos, "slug"),

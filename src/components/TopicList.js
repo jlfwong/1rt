@@ -2,9 +2,7 @@ import React, {Component, PropTypes} from 'react';
 import {Link} from 'react-router';
 import {connect} from 'react-redux';
 import {getDomainColor} from '../components/colors';
-import {maybeLoadTopic} from '../actions/topicActions';
 import {TutorialNavList} from '../components/TutorialNav';
-import {getTopic} from '../reducers/topic';
 
 // TODO(jlfwong): De-dep this with TutorialNav.js
 const basicBorder = `1px solid #ddd`;
@@ -35,58 +33,27 @@ const topicTitleStyle = (domainSlug) => ({
 })
 
 export default
-@connect((state, props) => ({
-  topicDetails: props.topics.map(t => getTopic(state, t.nodeSlug))
-}))
 class TopicList {
-  static propTypes = {
-    topics: PropTypes.arrayOf(PropTypes.shape({
-      title: PropTypes.string.isRequired,
-      nodeSlug: PropTypes.string.isRequired
-    })),
+  renderTopic(relativeUrl, child) {
+    const {domainSlug} = this.props;
 
-    relativeUrl: PropTypes.string.isRequired,
+    const url = `${relativeUrl}/${child.slug}`;
 
-    domainSlug: PropTypes.string.isRequired,
-
-    topicDetails: PropTypes.arrayOf(PropTypes.shape({
-      description: PropTypes.string.isRequired
-    }))
-  }
-
-  static contextTypes = {
-    store: PropTypes.object.isRequired
-  }
-
-  componentDidMount() {
-    const {topics} = this.props;
-    const {store} = this.context;
-
-    topics.forEach(t => maybeLoadTopic(store, t.nodeSlug));
-  }
-
-  renderTopic(relativeUrl, child, index) {
-    const {domainSlug, topicDetails} = this.props;
-    const details = topicDetails[index];
-
-    const url = `${relativeUrl}/${child.nodeSlug}`;
-
-    const isTutorial = (details &&
-                          details.children.some(c => c.kind !== "Topic"))
+    const isTutorial = (child.childData.some(c => c.kind !== "Topic"))
 
     // TODO(jlfwong): Aggressively fetch data for tutorial content? This could
     // get to be a lot of requests if we fetch data for all tutorial nodes in
     // a topic.
-    return <div style={topicListItemStyle} key={child.nodeSlug}>
+    return <div style={topicListItemStyle} key={child.slug}>
       <Link to={url}>
-        <h2 style={topicTitleStyle(domainSlug)}>{child.title}</h2>
+        <h2 style={topicTitleStyle(domainSlug)}>{child.translatedTitle}</h2>
       </Link>
-      {details &&
-        <div>
-          <div>{details.description}</div>
+      <div>
+        <div>{child.translatedDescription}</div>
+        {/* TODO(jlfwong): Figure out why this crashes 
           {isTutorial &&
-            <TutorialNavList tutorialData={details} domainSlug={domainSlug} />}
-        </div>}
+            <TutorialNavList tutorialData={child} domainSlug={domainSlug} />*/}
+      </div>
     </div>;
   }
 

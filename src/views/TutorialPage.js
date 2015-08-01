@@ -1,36 +1,40 @@
 import React, {Component, PropTypes} from 'react';
 import {Link} from 'react-router';
 import {connect} from 'react-redux';
-import {maybeLoadTopic} from '../actions/topicActions';
-import {topicWasRequested, getTopic} from '../reducers/topic';
 import SubjectHeader from '../components/SubjectHeader';
 import {TutorialNavList} from '../components/TutorialNav';
+import {getTopicBySlug, getTopicById, getVideoById} from '../reducers/topictree';
 
-@connect((state, props) => ({
-  topicData: getTopic(state, props.params.tutorialSlug)
-}))
+const tap = (v) => { console.log(v); return v; }
+
+const debug = (fn) => (...args) => {
+  console.log("Arg:", args);
+  const ret = fn(...args);
+  console.log("Ret:", ret);
+  return ret;
+}
+
+@connect(debug((state, props) => ({
+  topicData: getTopicBySlug(state, props.params.tutorialSlug),
+  firstVideo: getVideoById(state, getTopicBySlug(state, props.params.tutorialSlug).childData[0].id)
+})))
 export default
 class TutorialPage {
-  static propTypes = {
-    topicData: PropTypes.object,
-    params: PropTypes.object.isRequired
-  }
-
   static contextTypes = {
     router: PropTypes.object.isRequired
   }
 
   componentDidMount() {
-    const {topicData, location, params} = this.props;
+    const {topicData, params, firstVideo} = this.props;
     const {router} = this.context;
 
     // Redirect to the first content node in the tutorial.
     router.replaceWith(
-            `${topicData.relativeUrl}/${topicData.children[0].nodeSlug}`);
+            `${topicData.relativeUrl}/v/${firstVideo.slug}`);
   }
 
   static fetchData(store, nextParams) {
-    return maybeLoadTopic(store, nextParams.tutorialSlug);
+    return [`topic:${nextParams.tutorialSlug}/*`]
   }
 
   render() {

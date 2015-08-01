@@ -22,17 +22,17 @@ export const reducer = (state = initialState, action = {}) => {
 
 const _get = (totalState) => (totalState[STORE_KEY] || initialState);
 
-export const getTopicBySlug = (totalState, topicSlug) =>
-  TopicTree.getTopicBySlug(_get(totalState), topicSlug);
+export const getTopicBySlug = (totalState, slug) =>
+  TopicTree.getTopicBySlug(_get(totalState), slug);
 
-export const getTopicById = (totalState, topicSlug) =>
-  TopicTree.getTopicById(_get(totalState), topicSlug);
+export const getTopicById = (totalState, id) =>
+  TopicTree.getTopicById(_get(totalState), id);
 
-export const getVideoBySlug = (totalState, topicSlug) =>
-  TopicTree.getVideoBySlug(_get(totalState), topicSlug);
+export const getVideoBySlug = (totalState, slug) =>
+  TopicTree.getVideoBySlug(_get(totalState), slug);
 
-export const getVideoById = (totalState, topicSlug) =>
-  TopicTree.getVideoById(_get(totalState), topicSlug);
+export const getVideoById = (totalState, id) =>
+  TopicTree.getVideoById(_get(totalState), id);
 
 export const hasDataForPath = (totalState, path) =>
   TopicTree.hasDataForPath(path, TopicTree.indexData(_get(totalState)));

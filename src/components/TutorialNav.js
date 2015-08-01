@@ -36,11 +36,11 @@ export class TutorialNavList {
     const {tutorialData, activePath, domainSlug} = this.props;
 
     // NOTE: relativeUrl contains a leading slash
-    const url = `${tutorialData.relativeUrl}/${child.nodeSlug}`;
+    const url = `${tutorialData.relativeUrl}/${child.slug}`;
 
     const isActive = (activePath === url);
 
-    return <li key={`${child.kind}:${child.nodeSlug}`}>
+    return <li key={`${child.kind}:${child.slug}`}>
       <Link to={url} style={tabLinkStyle(isActive, domainSlug)}>
         <SubwayIcon
             isLast={index === children.length - 1}
@@ -113,14 +113,17 @@ class TutorialNav {
     const {parentTopicData, domainSlug, tutorialData} = this.props;
 
     let tutorialIndexInTopic = null;
-    parentTopicData.children.forEach((child, index) => {
-      if (child.nodeSlug === tutorialData.nodeSlug) {
+    // TODO(jlfwong): Fix this
+    /*
+    parentTopicData.childData.forEach((child, index) => {
+      if (child.id === tutorialData.id) {
         tutorialIndexInTopic = index;
       }
     });
+    */
 
     const nextTutorialData = (tutorialIndexInTopic !== null &&
-                              parentTopicData.children[tutorialIndexInTopic + 1]);
+                              parentTopicData.childData[tutorialIndexInTopic + 1]);
 
     return <div style={containerStyle}>
       <div style={newTopicBreadcrumbStyle}>
@@ -137,7 +140,7 @@ class TutorialNav {
         <TutorialNavList {...this.props} />
       </div>
       {nextTutorialData &&
-        <Link to={`${parentTopicData.relativeUrl}/${nextTutorialData.nodeSlug}`}
+        <Link to={`${parentTopicData.relativeUrl}/${nextTutorialData.slug}`}
               style={tutorialNavNextStyle}>
           <div style={tutorialNavNextLabelStyle}>Next Section:</div>
           {nextTutorialData.title}

@@ -1,14 +1,16 @@
 import React, {Component, PropTypes} from 'react';
-import {getTopic, topicWasRequested} from '../reducers/topic';
 import {connect} from 'react-redux';
-import {maybeLoadTopic} from '../actions/topicActions';
 import SubjectHeader from '../components/SubjectHeader';
 import TopicList from '../components/TopicList';
+import {getTopicBySlug, getTopicById} from '../reducers/topictree';
 
 export default
 @connect((state, props) => ({
-  topicData: getTopic(state, props.params.topicSlug),
-  parentTopicData: getTopic(state, props.params.subjectSlug)
+  parentTopicData: getTopicBySlug(state, props.params.subjectSlug),
+  topicData: getTopicBySlug(state, props.params.topicSlug),
+  subTopicData: getTopicBySlug(state, props.params.topicSlug).childData.map(
+    c => getTopicById(state, c.id)
+  ).filter(x => !!x)
 }))
 class TopicPage {
   static propTypes = {
@@ -17,22 +19,22 @@ class TopicPage {
   }
 
   static fetchData(store, nextParams) {
-    return Promise.all([
-      maybeLoadTopic(store, nextParams.topicSlug),
-      maybeLoadTopic(store, nextParams.subjectSlug)
-    ])
+    return [
+      `topic:${nextParams.subjectSlug}`,
+      `topic:${nextParams.topicSlug}/*`
+    ];
   }
 
   render() {
-    const {parentTopicData, topicData, params} = this.props;
+    const {parentTopicData, topicData, subTopicData, params} = this.props;
     return <ul>
       <SubjectHeader
         ancestorTopicData={[parentTopicData].filter(x => !!x)}
-        title={topicData.title}
-        description={topicData.description}
+        title={topicData.translatedTitle}
+        description={topicData.translatedDescription}
         domainSlug={params.domainSlug} />
       <TopicList
-        topics={topicData.children}
+        topics={subTopicData}
         relativeUrl={topicData.relativeUrl}
         domainSlug={params.domainSlug} />
     </ul>;

@@ -16,6 +16,7 @@ import Header from './components/Header';
 import http from 'http';
 import http2 from 'http2';
 import TopicTree from './TopicTree';
+import FullTopicTree from './FullTopicTree';
 
 const pretty = new PrettyError();
 const app = new Express();
@@ -54,10 +55,9 @@ const body = (webpackStats, component, store) => `
 
 const epilogue = `</body></html>`;
 
-TopicTree.refreshData();
-
 app.use('/api', (req, res) => {
-  res.send(TopicTree.getDataForPaths(req.path.split(",")));
+  res.send(TopicTree.getDataForPaths(req.path.split(","),
+                                     FullTopicTree));
 });
 
 app.use((req, res) => {
