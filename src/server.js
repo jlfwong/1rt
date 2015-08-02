@@ -17,6 +17,7 @@ import http from 'http';
 import http2 from 'http2';
 import TopicTree from './TopicTree';
 import FullTopicTree from './FullTopicTree';
+import Woden from 'woden';
 
 const pretty = new PrettyError();
 const app = new Express();
@@ -98,6 +99,30 @@ if (config.port) {
       console.error(err);
     } else {
       console.log(`Express server listening on port ${config.port}`);
+    }
+  });
+
+  // Cache thumbnail responses from YouTube in memory.
+  const woden = new Woden({});
+  woden.when(/i.ytimg.com/, {
+    cacheTimeout: function(cacheEntry, req, proxyRes) {
+      if (cacheEntry.body.length > (30 * 1024)) {
+        return -1;  // don't cache large responses
+      }
+
+      if (proxyRes.statusCode !== 200) {
+        return -1;  // only cache successful responses
+      }
+
+      const minutesToCache = 10;
+      return minutesToCache * 60 * 1000;
+    }
+  });
+  woden.listen(config.youtubeProxyPort, (err) => {
+    if (err) {
+      console.error(err);
+    } else {
+      console.log(`Woden proxy listening on port ${config.youtubeProxyPort}`);
     }
   });
 
