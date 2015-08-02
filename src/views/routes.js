@@ -9,18 +9,13 @@ import SubjectPage from 'views/SubjectPage';
 import TopicPage from 'views/TopicPage';
 import NotFound from 'views/NotFound';
 import Redirect from 'views/Redirect';
+import HomePage from 'views/HomePage';
 
 class Dummy {
   render() {
     return <div>
       {this.props.children}
     </div>;
-  }
-}
-
-class HomePage {
-  render() {
-    return <h1>Home</h1>
   }
 }
 
