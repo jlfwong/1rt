@@ -32,11 +32,11 @@ export default class Header extends Component {
     return (
       <div className="clearfix" style={outerStyle}>
         <nav style={{float:'left'}}>
-        <a href="/" style={kaLinkStyle}>{logotypeSvg}</a>
+        <a href="#" style={kaLinkStyle}>{logotypeSvg}</a>
         </nav>
         <div style={{float:'right'}}>
         <a href="#" style={buttonStyle} title="Menu">{menuSvg}</a>
-        <a href="/search" style={buttonStyle} title="Search">{searchSvg}</a>
+        <a href="#" style={buttonStyle} title="Search">{searchSvg}</a>
         </div>
       </div>
     );
