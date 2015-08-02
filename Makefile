@@ -7,7 +7,7 @@ build:
 # Run `make build` before this. It's too much to run every time.
 dockerserve:
 	docker run -p 80:8080 -p 443:8443 -d $(USER)/1rt
-	boot2docker ip
+	echo "Visit http://"`boot2docker ip`":80"
 
 # See DEPLOYING.md for explanations of the below steps.
 deploy: build
