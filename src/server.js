@@ -57,6 +57,7 @@ const body = (webpackStats, component, store) => `
 const epilogue = `</body></html>`;
 
 app.use('/api', (req, res) => {
+  res.setHeader('Content-Type', 'application/json');
   res.send(TopicTree.getDataForPaths(req.path.split(","),
                                      FullTopicTree));
 });
@@ -72,6 +73,7 @@ app.use((req, res) => {
   const store = createStore(client);
   const location = new Location(req.path, req.query);
 
+  res.setHeader('Content-Type', 'text/html; charset=UTF-8');
   res.write(prologue("Khan Academy", fs.readFileSync("./static/site.css")));
   res.flush();
 
