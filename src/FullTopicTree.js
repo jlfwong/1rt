@@ -29,6 +29,10 @@ if (__SERVER__) {
   */
 
   raw = JSON.parse(require("fs").readFileSync(`${__dirname}/../static/topictree.json`));
+  raw.topics.forEach(t => {
+    t.childData = t.childData.filter(c => (c.kind === "Topic" ||
+                                           c.kind === "Video"));
+  })
 } else {
   raw = {topics: [], videos: []}
 }
