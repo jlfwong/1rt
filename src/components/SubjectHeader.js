@@ -5,12 +5,12 @@ import {Link} from 'react-router';
 const headerStyle = (domainSlug) => ({
   background: getSubjectColor(domainSlug),
   padding: "60px 40px 60px 40px"
-})
+});
 
 const subjectTitleStyle = {
   borderBottom: "1px solid rgba(255,255,255,0.5)",
   color: "#fff",
-  fontSize: "52px",
+  fontSize: "36px",
   fontWeight: "normal",
   lineHeight: 1,
   textRendering: "optimizeLegibility",
@@ -43,7 +43,7 @@ class SubjectHeader {
     title: PropTypes.string.isRequired,
     description: PropTypes.string.isRequired,
     domainSlug: PropTypes.string.isRequired
-  }
+  };
 
   render() {
     const {ancestorTopicData, domainSlug, title, description} = this.props;
